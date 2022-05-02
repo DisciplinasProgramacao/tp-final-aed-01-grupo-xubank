@@ -4,14 +4,14 @@ public class ContaBancaria {
     String cpf;
     double saldo;
 
-    public ContaBancaria(int numero, String cdgPessoa, double sld){
+    public ContaBancaria(int numero, String cpf, double sld){
         this.num = numero;
-        this.cpf = cdgPessoa;
+        this.cpf = cpf;
         this.saldo = sld;
     }
 
     public String dadosConta(){
-        String linhaConta = "Conta Número: " + this.num + ", CPF: " + this.cpf + ", Saldo: " + this.saldo + "\n";
+        String linhaConta = "Conta Número: " + this.num + ", CPF: " + this.cpf + ", Saldo: " + this.saldo;
         return linhaConta;  //retorna uma string com os dados da conta
     }
 }

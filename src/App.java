@@ -114,13 +114,18 @@ public class App {
                 break;
 
                 case 3:
-                    FileWriter gravador = new FileWriter("contas-ordenadas.txt");
+                    File arqOrdenado = new File("contas-ordenadas.txt");
+                    FileWriter gravador = new FileWriter(arqOrdenado, false);
                     limparTela();
+                    System.out.println("Abrindo arquivo...");
                     Lista contasOrdenadas = ordenar(contas);
                     gravador.append(contasOrdenadas.imprimir());
                     contasOrdenadas = new Lista();
                     gravador.close();
+                    java.awt.Desktop.getDesktop().open((arqOrdenado));
+                    System.out.println("Arquivo aberto!");
                     pausar(teclado);
+                    arqOrdenado.delete();
                 break;
 
                 default:

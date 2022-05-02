@@ -7,12 +7,6 @@ public class Lista {
         this.ult = prim;
     }
 
-    public void enfileirar(ContaBancaria nova){
-        Elemento novo = new Elemento(nova);
-        ult.prox = novo;
-        ult = novo;
-    }
-
     public void InserirNaOrdem(ContaBancaria nova){
         if(vazia())
             enfileirar(nova);
@@ -26,6 +20,12 @@ public class Lista {
             if(aux == ult)
                 ult = novo;
         }
+    }
+
+    public void enfileirar(ContaBancaria nova){
+        Elemento novo = new Elemento(nova);
+        ult.prox = novo;
+        ult = novo;
     }
 
     public ContaBancaria desenfileirar(){
@@ -51,7 +51,7 @@ public class Lista {
         StringBuilder sb = new StringBuilder();
         Elemento aux = prim.prox;
         while(aux != null){
-            sb.append(aux.conta.dadosConta());
+            sb.append(aux.conta.dadosConta() + "\n");
             aux = aux.prox;
         }
         return sb.toString();
