@@ -60,28 +60,4 @@ public class Lista {
     public boolean vazia(){
         return prim == ult;//se a fila estiver vazia retorna true, se nao retorna false
     }
-
-    public ContaBancaria[] numerosCnts(String cpf){
-        int quantidadeDeConta = 0;
-        Elemento aux = prim.prox;
-        while(aux != null){
-            if (aux.conta.cpf.equals(cpf)) {
-                quantidadeDeConta += 1;
-            }
-            aux = aux.prox;
-        }
-
-        ContaBancaria[] numeroDeConta = new ContaBancaria[quantidadeDeConta];
-        int cont = 0;
-
-        Elemento aux2 = prim.prox;
-        while(aux2 != null){
-            if (aux2.conta.cpf.equals(cpf)) {
-                numeroDeConta[cont] = aux2.conta;
-                cont += 1;
-            }
-            aux2 = aux2.prox;
-        }
-        return numeroDeConta;
-    }
 }
