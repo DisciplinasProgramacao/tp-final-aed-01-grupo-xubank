@@ -1,5 +1,7 @@
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.Random;
 import java.util.Scanner;
 
@@ -8,10 +10,13 @@ public class App {
     static Random aleatorio = new Random(System.nanoTime());
     static final String nomeArquivo = "contas-bancarias.txt";   //nome do arquivo de dados
     static TabHash clientes;    //tabela hash ded clientes
+    static int quant;
 
     public static TabHash carregarDados() throws FileNotFoundException{
         Scanner arquivo = new Scanner(new File(nomeArquivo));  //cria e le o arquivo
-        TabHash novosClientes = new TabHash(110000);    //cria uma lista de contas
+        int qtd = Integer.parseInt(arquivo.nextLine()); //le a quantidade e contas no arquivo
+        int tam = (int)(qtd * 1.1); //cria a tabela com 10% de sobra
+        TabHash novosClientes = new TabHash(tam);    //cria uma tabela hash de clientes
 
         while(arquivo.hasNextLine()){ //enquanto tiver uma proxima linha no arquivo
 
@@ -26,7 +31,24 @@ public class App {
             adicionarContas(novaConta, novosClientes);  //joga a conta na lista de contas do respectivo cliente
         }
         arquivo.close();
+        quant = qtd;
         return novosClientes;   //retorna uma tabela hash de clientes
+    }
+
+    public static void salvarDados(TabHash tabela) throws IOException{
+        FileWriter escritor = new FileWriter(nomeArquivo, false);   //cria o escritor para sobrescrever o arquivo
+        Entrada[] dados = tabela.dados;
+        escritor.append(quant + "\n");   //grava a quantidade de contas
+        for(int i = 0; i < dados.length; i++){  //enquanto i menor que tam da tabela
+            if(dados[i].valido){    //se o dado for valido
+                Elemento aux = dados[i].cliente.cntsCliente.prim.prox;
+                while(aux != null){
+                    escritor.append(aux.conta.num + ";" + aux.conta.cpf + ";" + aux.conta.saldo + "\n");    //sobrescreve o arquivo com os dados
+                    aux = aux.prox; //caminha na lista
+                }
+            }
+        }
+        escritor.close();
     }
 
     public static void adicionarContas(ContaBancaria nova, TabHash dados){
@@ -97,6 +119,7 @@ public class App {
                     ContaBancaria novaConta = new ContaBancaria(novoNumero, cpf, sld);    //cria uma nova conta, com o cpf recebido e saldo inicial 0
                     adicionarContas(novaConta, clientes);   //adiciona a conta a lista de contas do respectivo cliente
                     System.out.println("Conta cadastrada.");
+                    quant++;
                     pausar(teclado);
                 break;
                 /*
@@ -129,6 +152,6 @@ public class App {
         }while(opcao!=0);
 
         teclado.close();
-        clientes.salvarDados();
+        salvarDados(clientes);
     }
 }

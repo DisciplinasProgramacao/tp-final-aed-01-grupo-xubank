@@ -1,6 +1,3 @@
-import java.io.FileWriter;
-import java.io.IOException;
-
 public class TabHash {
 
     public final String nomeArquivo = "contas-bancarias.txt";
@@ -52,19 +49,5 @@ public class TabHash {
                 sb.append(dados[i].cliente.imprimir() + "\n");  //concatena os dados em uma string
         
         return sb.toString();   //retorna essa string
-    }
-
-    public void salvarDados() throws IOException{
-        FileWriter escritor = new FileWriter(nomeArquivo, false);   //cria o escritor para sobrescrever o arquivo
-        for(int i = 0; i < dados.length; i++){  //enquanto i menor que tam da tabela
-            if(dados[i].valido){    //se o dado for valido
-                Elemento aux = dados[i].cliente.cntsCliente.prim.prox;
-                while(aux != null){
-                    escritor.append(aux.conta.num + ";" + aux.conta.cpf + ";" + aux.conta.saldo + "\n");    //sobrescreve o arquivo com os dados
-                    aux = aux.prox; //caminha na lista
-                }
-            }
-        }
-        escritor.close();
     }
 }
