@@ -122,9 +122,20 @@ public class App {
                     quant++;
                     pausar(teclado);
                 break;
-                /*
+                
                 case 3:
                     limparTela();
+                    File arqOrdenado = new File("contas-ordena");    //abre o arquivo
+                    FileWriter gravador = new FileWriter(arqOrdenado, false);   //abre o gravador de arquivo
+                    System.out.println("Abrindo arquivo...");
+                    clientes.quickSort(0, clientes.dados.length -1);
+                    gravador.append(clientes.imprimir());    //grava no arquivo as contas em ordem
+                    gravador.close();
+                    java.awt.Desktop.getDesktop().open((arqOrdenado));  //executa o arquivo
+                    System.out.println("Arquivo aberto!");
+                    pausar(teclado);
+                    arqOrdenado.delete();
+                    /*
                     File arqOrdenado = new File("contas-ordena");    //abre o arquivo
                     if(arqOrdenado.exists()){    //se o arquivo existir e nenhuma conta tiver sido feita na lista
                         System.out.println("Abrindo arquivo...");
