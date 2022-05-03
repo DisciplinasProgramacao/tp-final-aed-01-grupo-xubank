@@ -11,7 +11,7 @@ public class ContaBancaria {
     }
 
     public String dadosConta(){
-        String linhaConta = "Conta Número: " + this.num + ", CPF: " + this.cpf + ", Saldo: " + this.saldo;
+        String linhaConta = "Conta Número: " + this.num + ", Saldo: " + this.saldo;
         return linhaConta;  //retorna uma string com os dados da conta
     }
 }

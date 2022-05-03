@@ -1,20 +1,22 @@
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.FileNotFoundException;
 import java.util.Random;
 import java.util.Scanner;
 
 public class App {
 
     static Random aleatorio = new Random(System.nanoTime());
-    static final String nomeArquivo = "C:\\Users\\onfly\\Desktop\\tp-final-aed-01-grupo-xubank\\contas-bancarias.txt";   //nome do arquivo de dados
-    static Lista contas;  //cria uma lista de contas
-    static int alteracoes = 0; //contador de alteracoes
+    static final String nomeArquivo = "contas-bancarias.txt";   //nome do arquivo de dados
+    static TabHash clientes;    //tabela hash ded clientes
+    static int quant;
 
-    public static Lista carregarDados() throws FileNotFoundException{
+    public static TabHash carregarDados() throws FileNotFoundException{
         Scanner arquivo = new Scanner(new File(nomeArquivo));  //cria e le o arquivo
-        Lista novasContas = new Lista();    //cria uma lista de contas
+        int qtd = Integer.parseInt(arquivo.nextLine()); //le a quantidade e contas no arquivo
+        int tam = (int)(qtd * 1.1); //cria a tabela com 10% de sobra
+        TabHash novosClientes = new TabHash(tam);    //cria uma tabela hash de clientes
 
         while(arquivo.hasNextLine()){ //enquanto tiver uma proxima linha no arquivo
 
@@ -25,40 +27,45 @@ public class App {
             String cpf = (dados[1]);    //segundo dado: cpf
             double saldo = Double.parseDouble(dados[2]);    //terceiro dado: saldo inicial da conta
 
-            ContaBancaria novaConta = new ContaBancaria(numero, cpf, saldo); //cria um novo objeto "ContaBancaria"
-            novasContas.enfileirar(novaConta); //joga a conta criada em uma lista de contas.
+            ContaBancaria novaConta = new ContaBancaria(numero, cpf, saldo);    //cria a nova conta
+            adicionarContas(novaConta, novosClientes);  //joga a conta na lista de contas do respectivo cliente
         }
         arquivo.close();
-        return novasContas;
+        quant = qtd;
+        return novosClientes;   //retorna uma tabela hash de clientes
     }
 
-    public static void salvarDados(Lista dados) throws IOException{
+    public static void salvarDados(TabHash tabela) throws IOException{
         FileWriter escritor = new FileWriter(nomeArquivo, false);   //cria o escritor para sobrescrever o arquivo
-        Elemento aux = dados.prim.prox; //aux e o primeiro apos o sentinela
-        while(aux != null){ //enquanto aux nao for null
-            escritor.append(aux.conta.num + ";" + aux.conta.cpf + ";" + aux.conta.saldo + "\n");    //sobrescreve o arquivo com os dados
-            aux = aux.prox; //caminha na lista
+        Entrada[] dados = tabela.dados;
+        escritor.append(quant + "\n");   //grava a quantidade de contas
+        for(int i = 0; i < dados.length; i++){  //enquanto i menor que tam da tabela
+            if(dados[i].valido){    //se o dado for valido
+                Elemento aux = dados[i].cliente.cntsCliente.prim.prox;
+                while(aux != null){
+                    escritor.append(aux.conta.num + ";" + aux.conta.cpf + ";" + aux.conta.saldo + "\n");    //sobrescreve o arquivo com os dados
+                    aux = aux.prox; //caminha na lista
+                }
+            }
         }
         escritor.close();
     }
 
-    public static Lista ordenar(Lista dados){
-        Lista cnts = new Lista();
-        Elemento aux = dados.prim.prox;
-        while(aux != null){
-            cnts.InserirNaOrdem(aux.conta);
-            aux = aux.prox;
+    public static void adicionarContas(ContaBancaria nova, TabHash dados){
+        Cliente novo = dados.buscar(nova.cpf);  //procura a posicao na tabela
+        if(novo == null){   //se nao existir nenhum  cliente naquela posicao
+            novo = new Cliente(nova.cpf);   //cria o cliente
+            dados.inserir(novo.cpf, novo);  //insere ele na tabela
         }
-        return cnts;
+        novo.cntsCliente.enfileirar(nova);  //lista a conta na lista de contas daquele cliente
     }
 
     public static int mostrarMenu(Scanner teclado){
         System.out.println("CONTAS BANCARIAS XUBANK");
         System.out.println("=======================");
-        System.out.println("1 - Consultar conta");
+        System.out.println("1 - Consultar contas de um cliente");
         System.out.println("2 - Adicionar conta");
-        System.out.println("3 - Exibir contas ordenadas");
-        System.out.println("4 - ver minhas contas");
+        System.out.println("3 - Exibir clientes ordenados pelo cpf");
         System.out.println("0 - Sair");
 
         int opcao = Integer.parseInt(teclado.nextLine());
@@ -82,7 +89,7 @@ public class App {
 
     public static void main(String[] args) throws Exception{
         Scanner teclado = new Scanner(System.in);
-        contas = carregarDados();
+        clientes = carregarDados();
         int opcao;
 
         do{
@@ -92,15 +99,15 @@ public class App {
             switch(opcao){
                 case 1:
                     limparTela();
-                    ContaBancaria contaDesejada;
-                    int numero = Integer.parseInt(lerTeclado("Número da conta: ", teclado));    //recebe o numero da conta que deseja buscar
-                    contaDesejada = contas.buscar(numero);   //busca a conta desejada e retorna um objeto
+                    Cliente clienteDesejado;
+                    String cpfDesejado = lerTeclado("CPF do cliente: ", teclado);    //recebe o cpf do cliente que deseja buscar
+                    clienteDesejado = clientes.buscar(cpfDesejado);   //busca a cliente desejado
 
                     limparTela();
-                    if(contaDesejada!=null) //se a conta existir mostra os dados da conta
-                        System.out.println(contaDesejada.dadosConta());
-                    else    //se nao: conta nao cadastrada
-                        System.out.println("Conta não cadastrada");
+                    if(clienteDesejado != null) //se o cliente existir mostra os dados da conta
+                        System.out.println(clienteDesejado.imprimir());
+                    else    //se nao: cliente nao cadastrado
+                        System.out.println("Cliente não cadastrado.");
                     pausar(teclado);
                 break;
 
@@ -110,16 +117,27 @@ public class App {
                     String cpf = lerTeclado("CPF: ", teclado);    //recebe o cpf da nova conta
                     double sld = 0;
                     ContaBancaria novaConta = new ContaBancaria(novoNumero, cpf, sld);    //cria uma nova conta, com o cpf recebido e saldo inicial 0
-                    contas.enfileirar(novaConta);   //joga a nova conta em uma lista de contas
+                    adicionarContas(novaConta, clientes);   //adiciona a conta a lista de contas do respectivo cliente
                     System.out.println("Conta cadastrada.");
-                    alteracoes++;
+                    quant++;
                     pausar(teclado);
                 break;
-
+                
                 case 3:
                     limparTela();
-                    File arqOrdenado = new File("contas-ordenadas.txt");    //abre o arquivo
-                    if(arqOrdenado.exists() && alteracoes == 0){    //se o arquivo existir e nenhuma conta tiver sido feita na lista
+                    File arqOrdenado = new File("contas-ordena");    //abre o arquivo
+                    FileWriter gravador = new FileWriter(arqOrdenado, false);   //abre o gravador de arquivo
+                    System.out.println("Abrindo arquivo...");
+                    clientes.quickSort(0, clientes.dados.length -1);
+                    gravador.append(clientes.imprimir());    //grava no arquivo as contas em ordem
+                    gravador.close();
+                    java.awt.Desktop.getDesktop().open((arqOrdenado));  //executa o arquivo
+                    System.out.println("Arquivo aberto!");
+                    pausar(teclado);
+                    arqOrdenado.delete();
+                    /*
+                    File arqOrdenado = new File("contas-ordena");    //abre o arquivo
+                    if(arqOrdenado.exists()){    //se o arquivo existir e nenhuma conta tiver sido feita na lista
                         System.out.println("Abrindo arquivo...");
                         java.awt.Desktop.getDesktop().open((arqOrdenado));  //executa o arquivo
                         System.out.println("Arquivo aberto!");
@@ -137,37 +155,14 @@ public class App {
                     arqOrdenado.deleteOnExit();
                     pausar(teclado);
                 break;
-
-                case 4: 
-                    limparTela();    
-                    
-                    String cpfBuscar = lerTeclado("CPF: ", teclado);    //recebe o cpf para buscar contas
-                
-                    ContaBancaria[] contasDoCpfBuscar = contas.numerosCnts(cpfBuscar);
-                    Cliente clienteBuscar = new Cliente(cpfBuscar, contasDoCpfBuscar);
-                  
-                    //Enquanto tiver contas ele vai printar
-                    int quantConta = 0;
-                    if (clienteBuscar.contas.length > 0) {
-                        System.out.println("Suas contas são:");
-                        while (quantConta < clienteBuscar.contas.length) {
-                            System.out.println(clienteBuscar.contas[quantConta].num);
-                            quantConta++;
-                        }
-                    } else {
-                        System.out.println("Esse cpf não possui nenhuma conta bancaria cadastrada na plataforma");
-                    }
-    
-                    pausar(teclado);
-                break;  
-
+                    */
                 default:
                     limparTela();
                 break;
             }
         }while(opcao!=0);
 
-        salvarDados(contas);    //salva os dados no arquivo ao encerrar o programa
         teclado.close();
+        salvarDados(clientes);
     }
 }
