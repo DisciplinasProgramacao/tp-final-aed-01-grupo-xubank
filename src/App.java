@@ -8,7 +8,7 @@ import java.util.Scanner;
 public class App {
 
     static Random aleatorio = new Random(System.nanoTime());
-    static final String nomeArquivo = "contas-bancarias.txt";   //nome do arquivo de dados
+    static final String nomeArquivo = "C:\\Users\\onfly\\Desktop\\tp-final-aed-01-grupo-xubank\\contas-bancarias.txt";   //nome do arquivo de dados
     static Lista contas;  //cria uma lista de contas
     static int alteracoes = 0; //contador de alteracoes
 
@@ -58,6 +58,7 @@ public class App {
         System.out.println("1 - Consultar conta");
         System.out.println("2 - Adicionar conta");
         System.out.println("3 - Exibir contas ordenadas");
+        System.out.println("4 - ver minhas contas");
         System.out.println("0 - Sair");
 
         int opcao = Integer.parseInt(teclado.nextLine());
@@ -136,6 +137,29 @@ public class App {
                     arqOrdenado.deleteOnExit();
                     pausar(teclado);
                 break;
+
+                case 4: 
+                    limparTela();    
+                    
+                    String cpfBuscar = lerTeclado("CPF: ", teclado);    //recebe o cpf para buscar contas
+                
+                    ContaBancaria[] contasDoCpfBuscar = contas.numerosCnts(cpfBuscar);
+                    Cliente clienteBuscar = new Cliente(cpfBuscar, contasDoCpfBuscar);
+                  
+                    //Enquanto tiver contas ele vai printar
+                    int quantConta = 0;
+                    if (clienteBuscar.contas.length > 0) {
+                        System.out.println("Suas contas são:");
+                        while (quantConta < clienteBuscar.contas.length) {
+                            System.out.println(clienteBuscar.contas[quantConta].num);
+                            quantConta++;
+                        }
+                    } else {
+                        System.out.println("Esse cpf não possui nenhuma conta bancaria cadastrada na plataforma");
+                    }
+    
+                    pausar(teclado);
+                break;  
 
                 default:
                     limparTela();
