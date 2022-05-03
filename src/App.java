@@ -135,27 +135,7 @@ public class App {
                     System.out.println("Arquivo aberto!");
                     pausar(teclado);
                     arqOrdenado.delete();
-                    /*
-                    File arqOrdenado = new File("contas-ordena");    //abre o arquivo
-                    if(arqOrdenado.exists()){    //se o arquivo existir e nenhuma conta tiver sido feita na lista
-                        System.out.println("Abrindo arquivo...");
-                        java.awt.Desktop.getDesktop().open((arqOrdenado));  //executa o arquivo
-                        System.out.println("Arquivo aberto!");
-                    }
-                    else{   //se nao existir ou houver alteracoes
-                        FileWriter gravador = new FileWriter(arqOrdenado, false);   //abre o gravador de arquivo
-                        System.out.println("Abrindo arquivo...");
-                        Lista contasOrdenadas = ordenar(contas);    //ordena as contas em uma nova lista
-                        gravador.append(contasOrdenadas.imprimir());    //grava no arquivo as contas em ordem
-                        contasOrdenadas = new Lista();  //apaga a lista
-                        gravador.close();
-                        java.awt.Desktop.getDesktop().open((arqOrdenado));  //executa o arquivo
-                        System.out.println("Arquivo aberto!");
-                    }
-                    arqOrdenado.deleteOnExit();
-                    pausar(teclado);
                 break;
-                    */
                 default:
                     limparTela();
                 break;
