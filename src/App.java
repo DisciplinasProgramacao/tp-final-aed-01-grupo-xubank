@@ -10,6 +10,7 @@ public class App {
     static Random aleatorio = new Random(System.nanoTime());
     static final String nomeArquivo = "contas-bancarias.txt";   //nome do arquivo de dados
     static Lista contas;  //cria uma lista de contas
+    static int alteracoes = 0; //contador de alteracoes
 
     public static Lista carregarDados() throws FileNotFoundException{
         Scanner arquivo = new Scanner(new File(nomeArquivo));  //cria e le o arquivo
@@ -104,22 +105,35 @@ public class App {
 
                 case 2: 
                     limparTela();
-                    int novoNumero =  aleatorio.nextInt(1000000);
+                    int novoNumero =  aleatorio.nextInt(100000, 1000000);
                     String cpf = lerTeclado("CPF: ", teclado);    //recebe o cpf da nova conta
                     double sld = 0;
                     ContaBancaria novaConta = new ContaBancaria(novoNumero, cpf, sld);    //cria uma nova conta, com o cpf recebido e saldo inicial 0
                     contas.enfileirar(novaConta);   //joga a nova conta em uma lista de contas
                     System.out.println("Conta cadastrada.");
+                    alteracoes++;
                     pausar(teclado);
                 break;
 
                 case 3:
-                    FileWriter gravador = new FileWriter("contas-ordenadas.txt");
                     limparTela();
-                    Lista contasOrdenadas = ordenar(contas);
-                    gravador.append(contasOrdenadas.imprimir());
-                    contasOrdenadas = new Lista();
-                    gravador.close();
+                    File arqOrdenado = new File("contas-ordenadas.txt");    //abre o arquivo
+                    if(arqOrdenado.exists() && alteracoes == 0){    //se o arquivo existir e nenhuma conta tiver sido feita na lista
+                        System.out.println("Abrindo arquivo...");
+                        java.awt.Desktop.getDesktop().open((arqOrdenado));  //executa o arquivo
+                        System.out.println("Arquivo aberto!");
+                    }
+                    else{   //se nao existir ou houver alteracoes
+                        FileWriter gravador = new FileWriter(arqOrdenado, false);   //abre o gravador de arquivo
+                        System.out.println("Abrindo arquivo...");
+                        Lista contasOrdenadas = ordenar(contas);    //ordena as contas em uma nova lista
+                        gravador.append(contasOrdenadas.imprimir());    //grava no arquivo as contas em ordem
+                        contasOrdenadas = new Lista();  //apaga a lista
+                        gravador.close();
+                        java.awt.Desktop.getDesktop().open((arqOrdenado));  //executa o arquivo
+                        System.out.println("Arquivo aberto!");
+                    }
+                    arqOrdenado.deleteOnExit();
                     pausar(teclado);
                 break;
 
