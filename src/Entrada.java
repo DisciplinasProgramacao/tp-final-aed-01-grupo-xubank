@@ -29,6 +29,6 @@ public class Entrada {
     }
 
     public Cliente getValor(){  //retorna o dado naquela entrada
-        return this.cliente;
+            return this.cliente;
     }
 }

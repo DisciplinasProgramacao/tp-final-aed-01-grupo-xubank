@@ -7,34 +7,10 @@ public class Lista {
         this.ult = prim;
     }
 
-    public void InserirNaOrdem(ContaBancaria nova){
-        if(vazia())     //se a fila estiver vazia
-            enfileirar(nova);   //insere na proxima posicao
-        else{   //se nao
-            Elemento aux = prim;
-            while(aux.prox != null && nova.num > aux.prox.conta.num)    //enquanto auxiliar for diferente de nulo ou o numero da conta a ser iserida for maior que o aux.prox
-                aux = aux.prox; //o auxiliar caminha
-            Elemento novo = new Elemento(nova); //cria o novo elemento
-            novo.prox = aux.prox;       //insere ele na posicao do aux.prox
-            aux.prox = novo;
-            if(aux == ult)  //se o auxiliar era o ult
-                ult = novo; //o ultimo recebe o novo
-        }
-    }
-
-    public void enfileirar(ContaBancaria nova){
+    public void inserir(ContaBancaria nova){
         Elemento novo = new Elemento(nova); //cria um novo elemento
         ult.prox = novo;    //ult.prox recebe o novo
         ult = novo; //ultimo pula pro novo
-    }
-
-    public ContaBancaria desenfileirar(){
-        Elemento aux = prim.prox;
-        prim.prox = aux.prox;   //pula o primeiro elemento
-        aux.prox = null;    //aux.prox recebe null
-        if(aux == ult)  //se o aux era o ult
-            ult = prim; //ult = prim
-        return aux.conta;   //retorna o objeto dentro do elemento
     }
 
     public ContaBancaria buscar(int numConta){
