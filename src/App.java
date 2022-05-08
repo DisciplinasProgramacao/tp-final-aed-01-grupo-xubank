@@ -18,17 +18,18 @@ public class App {
     public static Lista listarContas() throws FileNotFoundException{
         Lista novasContas = new Lista();
         Scanner arquivo = new Scanner(new File(arquivoContas));   //cria e le o arquivo
-        int qtd = Integer.parseInt(arquivo.nextLine()); //le a quantidade de contas
+        int qtd = 0;
 
-        for(int i = 0; i < qtd; i++){
+        while(arquivo.hasNextLine()){
             String[] dados = arquivo.nextLine().split(";");   //le a linha do arquivo e separa os dados no ";"
 
             int numero = Integer.parseInt(dados[0]); //primeiro dado: numero da conta
             String cpf = (dados[1]);    //segundo dado: cpf
-            double saldo = Double.parseDouble(dados[2]);    //terceiro dado: saldo inicial da conta
+            double saldo = Double.parseDouble(dados[2].replace(",", "."));    //terceiro dado: saldo inicial da conta
 
             ContaBancaria nova = new ContaBancaria(numero, cpf, saldo);    //cria a nova conta
             novasContas.inserir(nova);  //insere a nova conta em uma lista de contas
+            qtd++;
         }
         arquivo.close();
         quantContas = qtd;  //conta a quantidade de contas
@@ -130,7 +131,6 @@ public class App {
     public static void salvarDadosContas() throws IOException{
         FileWriter escritor = new FileWriter(arquivoContas, false);   //cria o escritor para sobrescrever o arquivo
         Elemento aux = contas.prim.prox;
-        escritor.append(quantContas + "\n");    //grava a quantidade de contas
         while(aux != null){ //enquanto aux nao for null
             escritor.append(aux.conta.num + ";" + aux.conta.cpf + ";" + aux.conta.saldo + "\n");    //sobrescreve o arquivo de dados
             aux = aux.prox; //caminha com o aux
@@ -209,9 +209,9 @@ public class App {
     public static void main(String[] args) throws Exception{
         Scanner teclado = new Scanner(System.in);
         contas = listarContas();
-        clientes = listarClientes();
         operacoes = enfileirarOperacoes();
         carregarOperacoesDeCadaConta();
+        clientes = listarClientes();
         carregarListaDeCadaCliente();
 
         int opcao, num;

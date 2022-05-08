@@ -23,10 +23,10 @@ public class TabHash {
     
     public int localizar(String key){
         int pos = mapear(calcularCodigo(key));//descobre a posicao
-        int indiceSondagem = 1; //indice para iniciar a sondagem quadratica
+        int col = 1; //indice para iniciar a sondagem quadratica
         while(dados[pos].valido && !key.equals(dados[pos].chave)){  //enquanto entrada for valida e a chave for diferente da chave desejada
-            pos = mapear(pos + indiceSondagem * indiceSondagem);    //realiza sondagem quadratica e mapeia novamente
-            indiceSondagem++;   //indice de sondagem soma + 1
+            pos = (pos + col * col) % this.tam;    //realiza sondagem quadratica e mapeia novamente
+            col++;   //indice de sondagem soma + 1
         }
         return pos; //quando acha uma posicao vazia ou com a chave igual, retorna essa posicao
     }

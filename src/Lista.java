@@ -34,6 +34,6 @@ public class Lista {
     }
 
     public boolean vazia(){
-        return prim == ult;//se a fila estiver vazia retorna true, se nao retorna false
+        return prim == ult; //se a fila estiver vazia retorna true, se nao retorna false
     }
 }
