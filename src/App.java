@@ -55,25 +55,12 @@ public class App {
             cadastrarContaNaListaDoCliente(null, nova);
         }
         arquivo.close();
-        quantClientes = quant;
+        quantContas = quant;
         return novasContas;
     }
 
-    /*
-     String[] dados = arquivo.nextLine().split(";");
-
-            int numero = Integer.parseInt(dados[0]);
-            String cpf = (dados[1]);
-            double saldo = Double.parseDouble(dados[2].replace(",", "."));
-
-            ContaBancaria nova = new ContaBancaria(numero, cpf, saldo);
-            novasContas.inserir(nova);
-            cadastrarContaNaListaDoCliente(null, nova);
-     */
-
-    /*public static Fila enfileirarOperacoes() throws FileNotFoundException{
+    public static void carregarOperacoes() throws FileNotFoundException{
         Scanner arquivo = new Scanner(new File(arquivoOperacoes));
-        Fila novasOperacoes = new Fila();
 
         while(arquivo.hasNextLine()){
 
@@ -85,49 +72,15 @@ public class App {
             String data = (dados[3]);
 
             Operacao nova = new Operacao(numero, codigo, valor, data);
-            novasOperacoes.enfileirar(nova);
+            inserirOperacaoNaConta(nova);
         }
         arquivo.close();
-        return novasOperacoes;
-    }*/
-
-    public static void carregarListaDeCadaCliente(){
-        if(!contas.vazia()){
-            Elemento aux = contas.prim.prox;
-            while(aux != null){
-                ContaBancaria nova = aux.conta;
-                Cliente novo = clientes.buscar(nova.cpf);
-                novo.cntsCliente.inserir(nova);
-                aux = aux.prox;
-            }
-        }
     }
 
-    /*public static void carregarOperacoesDeCadaConta(){
-        if(!operacoes.vazia()){
-            Caixa aux = operacoes.prim.prox;
-            while(aux != null){
-                ContaBancaria temp = contas.buscar(aux.operacao.num);
-                aux = aux.prox;
-                temp.operacoes.enfileirar(operacoes.desenfileirar());
-            }
-        }
-    }*/
-
-    public static void salvarDadosOperacoes() throws IOException{
-        FileWriter escritor = new FileWriter(arquivoContas, false);
-        Elemento aux = contas.prim.prox;
-        while(aux != null){
-            if(!aux.conta.operacoes.vazia()){
-                Caixa temp = aux.conta.operacoes.prim.prox;
-                while(temp != null){
-                    escritor.append(temp.operacao.num + ";" + temp.operacao.codigo + ";" + temp.operacao.valor + ";" + temp.operacao.data + "\n");
-                    temp = temp.prox;
-                }
-            }
-            aux = aux.prox;
-        }
-        escritor.close();
+    public static void inserirOperacaoNaConta(Operacao nova){
+        ContaBancaria aux = new ContaBancaria(nova.num, -1, 0);
+        ContaBancaria desejada = (ContaBancaria)contas.buscar(aux);
+        desejada.operacoes.inserir(nova);
     }
     
     public static void salvarDadosClientes() throws IOException{
@@ -135,8 +88,9 @@ public class App {
         Entrada[] dados = clientes.dados;
         escritor.append(quantClientes + "\n");
         for(int i = 0; i < dados.length; i++){
-            if(dados[i].valido){
-                escritor.append(dados[i].cliente.cpf + ";" + dados[i].cliente.nome + "\n");
+            if(dados[i].checarValidez()){
+                Cliente aux = (Cliente)dados[i].dado;
+                escritor.append(aux.cpf + ";" + aux.nome + "\n");
             }
         }
         escritor.close();
@@ -144,10 +98,32 @@ public class App {
     
     public static void salvarDadosContas() throws IOException{
         FileWriter escritor = new FileWriter(arquivoContas, false);
-        Elemento aux = contas.prim.prox;
-        while(aux != null){
-            escritor.append(aux.conta.num + ";" + aux.conta.cpf + ";" + aux.conta.saldo + "\n");
-            aux = aux.prox;
+        Entrada[] dados = contas.dados;
+        escritor.append(quantContas + "\n");
+        for(int i = 0; i < dados.length; i++){
+            if(dados[i].checarValidez()){
+                ContaBancaria aux = (ContaBancaria)dados[i].dado;
+                escritor.append(aux.num + ";" + aux.cpf + ";" + aux.saldo + "\n");
+            }
+        }
+        escritor.close();
+    }
+
+    public static void salvarDadosOperacoes() throws IOException{
+        FileWriter escritor = new FileWriter(arquivoOperacoes, false);
+        Entrada[] dados = contas.dados;
+        for(int i = 0; i < dados.length; i++) {
+            if(dados[i].dado != null){
+                ContaBancaria conta = (ContaBancaria)dados[i].dado;
+                if(!conta.operacoes.vazia()){
+                    Elemento aux = conta.operacoes.prim.prox;
+                    while(aux != null){
+                        Operacao operacao = (Operacao)aux.dado;
+                        escritor.append(operacao.num + ";" + operacao.codigo + ";" + operacao.valor + ";" + operacao.data + "\n");
+                        aux = aux.prox;
+                    }
+                }
+            }
         }
         escritor.close();
     }
@@ -183,14 +159,13 @@ public class App {
     public static void cadastrarContaNaListaDoCliente(Scanner teclado, ContaBancaria conta){
         Cliente aux = new Cliente(conta.cpf, "");
         Cliente desejado = (Cliente) clientes.buscar(aux);
-        //clientes.buscar(conta.cpf);
-        /*if(aux == null){
+        if(desejado == null){
             String nome = lerTeclado("Nome do cliente: ", teclado);
-            aux = new Cliente(conta.cpf, nome);
-            clientes.inserir(conta.cpf, aux);
+            desejado = new Cliente(conta.cpf, nome);
+            clientes.inserir(conta.cpf, desejado);
             quantClientes++;
-        }*/
-        aux.cntsCliente.inserir(conta);
+        }
+        desejado.contasDoCliente.inserir(conta);
     }
 
     public static int mostrarMenu(Scanner teclado){
@@ -226,15 +201,9 @@ public class App {
         Scanner teclado = new Scanner(System.in);
         clientes = listarClientes();
         contas = listarContas();
-        System.out.println(" ");
-        /*
-        operacoes = enfileirarOperacoes();
-        carregarOperacoesDeCadaConta();
-        carregarListaDeCadaCliente();
-
+        carregarOperacoes();
         int opcao, num;
-        double saldo;
-        String cpf;
+        long cpf;
 
         do{
             limparTela();
@@ -245,11 +214,12 @@ public class App {
                 limparTela();
 
                 num = Integer.parseInt(lerTeclado("número da conta: ", teclado));
-                ContaBancaria contaDesejada = contas.buscar(num);
+                ContaBancaria contaAux = new ContaBancaria(num, -1, 0);
+                ContaBancaria contaDesejada = (ContaBancaria)contas.buscar(contaAux);
 
                 if(contaDesejada != null){
                     limparTela();
-                    System.out.println(contaDesejada.dadosConta());
+                    System.out.println(contaDesejada.toString());
                 }
                 else
                     System.out.println("Conta não cadastrada");
@@ -258,33 +228,34 @@ public class App {
 
                 case 2:
                 limparTela();
-                cpf = lerTeclado("CPF: ", teclado);
-                Cliente desejado = clientes.buscar(cpf);
+                cpf = Long.parseLong(lerTeclado("CPF: ", teclado));
+                Cliente clienteAux = new Cliente(cpf, "");
+                Cliente desejado = (Cliente)clientes.buscar(clienteAux);
                 if(desejado != null){
                     limparTela();
-                    System.out.println(desejado.contasCliente());
+                    System.out.println(desejado.toString());
                 }
                 else
                     System.out.println("Cliente não cadastrado");
                 pausar(teclado);
                 break;
 
-                case 3: 
+                case 3:
                 ContaBancaria aux;
                 int novoNumero;
                 do{
                     limparTela();
                     novoNumero =  Integer.parseInt(lerTeclado("Número: ", teclado));
-                    aux = contas.buscar(novoNumero);
+                    contaAux = new ContaBancaria(novoNumero, -1, 0);
+                    aux = (ContaBancaria) contas.buscar(contaAux);
                     if(aux != null){
                         System.out.println("Conta já existe, digite outro número");
                         pausar(teclado);
                     }
                 }while(aux != null);
-                cpf = lerTeclado("CPF: ", teclado);
-                saldo = 0;
-                ContaBancaria nova = new ContaBancaria(novoNumero, cpf, saldo);
-                contas.inserir(nova);
+                cpf = Long.parseLong(lerTeclado("CPF: ", teclado));
+                ContaBancaria nova = new ContaBancaria(novoNumero, cpf, 0);
+                contas.inserir(novoNumero, nova);
                 quantContas++;
                 cadastrarContaNaListaDoCliente(teclado, nova);
                 System.out.println("Conta cadastrada");
@@ -295,18 +266,18 @@ public class App {
                 limparTela();
                 System.out.println("Abrindo o arquivo");
                 ContaBancaria[] ordenadas = new ContaBancaria[quantContas];
-                Elemento temp = contas.prim.prox;
-                int i = 0;
-                while(temp != null){
-                    ordenadas[i] = temp.conta;
-                    temp = temp.prox;
-                    i++;
+                int j = 0;
+                for(int i = 0; i < contas.tam; i++){
+                    if(contas.dados[i].checarValidez()){
+                        ordenadas[j] = (ContaBancaria) contas.dados[i].dado;
+                        j++;
+                    }
                 }
                 ordenar(ordenadas, 0, quantContas - 1);
                 File ordenado = new File("contas-ordenadas.txt");
                 FileWriter gravador = new FileWriter(ordenado);
                 for(ContaBancaria conta : ordenadas)
-                    gravador.append(conta.dadosConta() + "\n");
+                    gravador.append(conta.toString() + "\n");
                 gravador.close();
                 java.awt.Desktop.getDesktop().open((ordenado));
                 System.out.println("Arquivo aberto");
@@ -317,10 +288,11 @@ public class App {
                 case 5:
                 limparTela();
                 num = Integer.parseInt(lerTeclado("numero da conta: ", teclado));
-                ContaBancaria desejada = contas.buscar(num);
+                contaAux = new ContaBancaria(num, -1, 0);
+                ContaBancaria desejada = (ContaBancaria)contas.buscar(contaAux);
                 if(desejada != null){
                     limparTela();
-                    System.out.println(desejada.operacoes.extrato());
+                    System.out.println(desejada.imprimirExtratoDaConta());
                 }
                 else
                     System.out.println("Conta não encontrada");
@@ -336,6 +308,6 @@ public class App {
         teclado.close();
         salvarDadosOperacoes();
         salvarDadosClientes();
-        salvarDadosContas();*/
+        salvarDadosContas();
     }
 }

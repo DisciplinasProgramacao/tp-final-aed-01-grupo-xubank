@@ -11,7 +11,7 @@ public class Operacao {
         this.data = dia;
     }
 
-    /*public String checarOperacao(){
+    public String checarOperacao(){
         String tipo = "";
         if(this.codigo == 0)
             tipo = "Deposito";
@@ -20,8 +20,9 @@ public class Operacao {
         return tipo;
     }
 
-    public String dadosOperacao(){
+    @Override
+    public String toString(){
         String s = new String("Conta número: " + this.num + ", Operacao: " + checarOperacao() + ", Valor: " + this.valor + ", Data: " + this.data);
         return s;
-    }*/
+    }
 }

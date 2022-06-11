@@ -26,8 +26,15 @@ public class ContaBancaria {
         return this.num;
     }
 
-    public String dadosConta(){
-        String linhaConta = "Conta Número: " + this.num + ", CPF: " + this.cpf + ", Saldo: " + this.saldo;
-        return linhaConta;  //retorna uma string com os dados da conta
+    @Override
+    public String toString(){
+        String dadosConta = "Conta Número: " + this.num + ", CPF: " + this.cpf + ", Saldo: " + this.saldo;
+        return dadosConta;
+    }
+
+    public String imprimirExtratoDaConta(){
+        String extrato = ("EXTRATO BANCARIO\n===================================================================\n");
+        extrato += operacoes.toString();
+        return extrato;
     }
 }

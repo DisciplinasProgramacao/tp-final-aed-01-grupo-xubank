@@ -7,51 +7,41 @@ public class Lista {
         this.ult = prim;
     }
 
-    public void inserir(ContaBancaria nova){
-        Elemento novo = new Elemento(nova);
-        ult.prox = novo;
-        ult = novo;
+    public void inserir(Object novo){
+        Elemento novoElemento = new Elemento(novo);
+        ult.prox = novoElemento;
+        ult = novoElemento;
     }
 
-    public ContaBancaria buscar(int numConta){
-        Elemento aux = prim.prox;
-        while(aux != null){
-            if(aux.conta.num == numConta)
-                return aux.conta;
-            aux = aux.prox;
-        }
-        return null;
-    }
-
-    /*public Operacao desenfileirar(){
+    public Object retirar(){
         Elemento aux = prim.prox;
         prim.prox = aux.prox;
         aux.prox = null;
         if(aux == ult)
             ult = prim;
-        return aux.operacao;
+        return aux.dado;
     }
 
-    public String imprimir(){
-        StringBuilder sb = new StringBuilder();
+    public Object buscar(Object outro){
         Elemento aux = prim.prox;
         while(aux != null){
-            sb.append(aux.conta.dadosConta() + "\n");
+            if(aux.dado.equals(outro))
+                return aux.dado;
+            aux = aux.prox;
+        }
+        return null;
+    }
+
+    @Override
+    public String toString(){
+        StringBuilder sb = new StringBuilder();
+        Elemento aux = prim.prox;
+        while(aux!=null){
+            sb.append(aux.dado.toString() + "\n");
             aux = aux.prox;
         }
         return sb.toString();
     }
-
-    public String extrato(){
-        StringBuilder sb = new StringBuilder();
-        Caixa aux = prim.prox;
-        sb.append("EXTRATO BANCARIO\n===================================================================\n");
-        while(aux != null){
-            sb.append(aux.operacao.dadosOperacao() + "\n");
-            aux = aux.prox;
-        }
-        return sb.toString();
-    }*/
 
     public boolean vazia(){
         return prim == ult;
