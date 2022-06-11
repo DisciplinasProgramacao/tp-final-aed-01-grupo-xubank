@@ -1,10 +1,10 @@
 public class Elemento {
 
-    public ContaBancaria conta;
+    public Object dado;
     public Elemento prox;
 
-    public Elemento(ContaBancaria nova){
-        this.conta = nova;
+    public Elemento(Object novo){
+        this.dado = novo;
         this.prox = null;
     }   
 }

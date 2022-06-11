@@ -1,7 +1,7 @@
 public class TabHash {
 
     public final String nomeArquivo = "contas-bancarias.txt";
-    public final int tam;   //tamanho da tabela
+    public final int tam;
     public Entrada[] dados;
 
     public TabHash(int n){
@@ -9,36 +9,29 @@ public class TabHash {
         this.dados = new Entrada[tam];
 
         for(int i = 0; i < this.tam; i++)
-            dados[i] = new Entrada();   //preenche a tabela com entradas null
+            dados[i] = new Entrada();
     }
 
-    public int calcularCodigo(String chave){    //calcula o codigo da chave
-        String codigo = chave.substring(0, 6);  //os 6 primeiros digitos do cpf
-        return Integer.parseInt(codigo);    //retorna o codigo
-    }
-
-    public int mapear(int codigo){
-        return codigo % tam;    //posicao no mapa e o resto da divisao do codigo pelo tamanho
+    public int mapear(Object qualquer){
+        return qualquer.hashCode() % tam;
     }
     
-    public int localizar(String key){
-        int pos = mapear(calcularCodigo(key));//descobre a posicao
-        int col = 1; //indice para iniciar a sondagem quadratica
-        while(dados[pos].valido && !key.equals(dados[pos].chave)){  //enquanto entrada for valida e a chave for diferente da chave desejada
-            pos = (pos + col * col) % this.tam;    //realiza sondagem quadratica e mapeia novamente
-            col++;   //indice de sondagem soma + 1
-        }
-        return pos; //quando acha uma posicao vazia ou com a chave igual, retorna essa posicao
+    public int localizar(Object desejado){
+        int pos = mapear(desejado);
+        while(dados[pos].checarValidez() && !dados[pos].dado.equals(desejado))
+            pos = (pos + 1) % tam;
+
+        return pos;
     }
 
-    public void inserir(String chave, Cliente novo){
-        Entrada nova = new Entrada(chave, novo);    //cria nova entrada
-        int pos = localizar(chave); //localiza a posicao
-        dados[pos] = nova;  //posiciona a entrada na respectiva posicao
+    public void inserir(long chave, Object novo){
+        Entrada nova = new Entrada(chave, novo);
+        int pos = localizar(novo);
+        dados[pos] = nova;
     }
 
-    public Cliente buscar(String chave){
-        int pos = localizar(chave); //localiza a posicao da chave
-        return dados[pos].getValor();   //retorna o dado dentro da entrada
+    public Object buscar(Object desejado){
+        int pos = localizar(desejado);
+        return dados[pos].getValor();
     }
 }

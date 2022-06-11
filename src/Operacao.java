@@ -13,14 +13,15 @@ public class Operacao {
 
     public String checarOperacao(){
         String tipo = "";
-        if(this.codigo == 0)    //se o codigo da operacao for 0 a operacao e um deposito
+        if(this.codigo == 0)
             tipo = "Deposito";
-        if(this.codigo == 1)    //se for 1 e um saque
+        if(this.codigo == 1)
             tipo = "Saque";
         return tipo;
     }
 
-    public String dadosOperacao(){  //grava os dados da operacao em uma string
+    @Override
+    public String toString(){
         String s = new String("Conta número: " + this.num + ", Operacao: " + checarOperacao() + ", Valor: " + this.valor + ", Data: " + this.data);
         return s;
     }

@@ -1,23 +1,33 @@
 public class Cliente{
 
-    String cpf;
+    long cpf;
     String nome;
-    Lista cntsCliente;
+    Lista contasDoCliente;
 
-    public Cliente(String cpfNovo, String nomeNovo){
+    public Cliente(long cpfNovo, String nomeNovo){
         this.cpf = cpfNovo;
         this.nome = nomeNovo;
-        this.cntsCliente = new Lista();
+        this.contasDoCliente = new Lista();
     }
 
-    public String contasCliente(){
-        StringBuilder sb = new StringBuilder();
-        Elemento aux = cntsCliente.prim.prox;   //aux recebe o primeiro elemento com dados na lista
-        sb.append("Cliente: " + this.nome + ", CPF: " + this.cpf + "\n" + "Contas: " + "\n");
-        while(aux != null){ //enquanto aux diferente de null
-            sb.append("Conta número: " + aux.conta.num + ", Saldo: " + aux.conta.saldo + "\n");   //concatena os dados em uma string
-            aux = aux.prox; //caminha com o aux
-        }
-        return sb.toString();   //retorna essa string
+    @Override
+    public boolean equals(Object outro){
+        Cliente outroCliente = (Cliente)outro;
+        if(this.cpf == outroCliente.cpf)
+            return true;
+
+        return false;
+    }
+
+    @Override
+    public int hashCode(){
+        return (int)(this.cpf / 100000);
+    }
+    
+    @Override
+    public String toString(){
+        String dados = "Cliente: " + this.nome + "\nCPF: " + this.cpf + "\n";
+        dados += contasDoCliente.toString();
+        return dados;
     }
 }

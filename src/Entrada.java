@@ -1,34 +1,34 @@
 public class Entrada {
     
-    public String chave;    //chave do dado
-    public Cliente cliente; //dado que vai ser armazenado
-    public boolean valido;  //boolean que diz se o dado ainda e valido
+    public long chave;
+    public Object dado;
+    public boolean valido;
 
-    public Entrada(){   //entrada vazia
-        this.chave = "";
-        this.cliente = null;
+    public Entrada(){
+        this.chave = -1;
+        this.dado = null;
         this.valido = false;
     }
 
-    public Entrada(String cpf, Cliente novo){
+    public Entrada(long cpf, Object novo){
         this.chave = cpf;
-        this.cliente = novo;
+        this.dado = novo;
         this.validar();
     }
 
-    public void invalidar(){    //deixa o dado invalido
+    public void invalidar(){
         this.valido = false;
     }
 
-    public void validar(){  //valida o dado
+    public void validar(){
         this.valido = true;
     }
 
-    public boolean checar(){   //checa se o dado e valido
+    public boolean checarValidez(){
         return this.valido;
     }
 
-    public Cliente getValor(){  //retorna o dado naquela entrada
-            return this.cliente;
+    public Object getValor(){
+        return this.dado;
     }
 }
