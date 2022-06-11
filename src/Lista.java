@@ -8,32 +8,52 @@ public class Lista {
     }
 
     public void inserir(ContaBancaria nova){
-        Elemento novo = new Elemento(nova); //cria um novo elemento
-        ult.prox = novo;    //ult.prox recebe o novo
-        ult = novo; //ultimo pula pro novo
+        Elemento novo = new Elemento(nova);
+        ult.prox = novo;
+        ult = novo;
     }
 
     public ContaBancaria buscar(int numConta){
-        Elemento aux = prim.prox;   //auxiliar recebe o primeiro elemento que nao esta vazio da fila
-        while(aux != null){ //enquanto auxiliar for diferente de null
-            if(aux.conta.num == numConta) //se o aux for igual a conta buscada
-                return aux.conta;   //retorna a conta
-            aux = aux.prox; //se nao, caminha com o auxiliar
+        Elemento aux = prim.prox;
+        while(aux != null){
+            if(aux.conta.num == numConta)
+                return aux.conta;
+            aux = aux.prox;
         }
-        return null;    //se nao encontrar, retorna null
+        return null;
+    }
+
+    /*public Operacao desenfileirar(){
+        Elemento aux = prim.prox;
+        prim.prox = aux.prox;
+        aux.prox = null;
+        if(aux == ult)
+            ult = prim;
+        return aux.operacao;
     }
 
     public String imprimir(){
-        StringBuilder sb = new StringBuilder(); //inicia o string builder
-        Elemento aux = prim.prox;   //aux comeca no primeiro elemento nao vazio
-        while(aux != null){ //enquanto aux for diferente de null
-            sb.append(aux.conta.dadosConta() + "\n");   //grava os dados em uma string
-            aux = aux.prox; //caminha com o auxiliar
+        StringBuilder sb = new StringBuilder();
+        Elemento aux = prim.prox;
+        while(aux != null){
+            sb.append(aux.conta.dadosConta() + "\n");
+            aux = aux.prox;
         }
-        return sb.toString();   //retorna uma string
+        return sb.toString();
     }
 
+    public String extrato(){
+        StringBuilder sb = new StringBuilder();
+        Caixa aux = prim.prox;
+        sb.append("EXTRATO BANCARIO\n===================================================================\n");
+        while(aux != null){
+            sb.append(aux.operacao.dadosOperacao() + "\n");
+            aux = aux.prox;
+        }
+        return sb.toString();
+    }*/
+
     public boolean vazia(){
-        return prim == ult; //se a fila estiver vazia retorna true, se nao retorna false
+        return prim == ult;
     }
 }

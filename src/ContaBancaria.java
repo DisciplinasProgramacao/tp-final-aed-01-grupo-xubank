@@ -3,13 +3,13 @@ public class ContaBancaria {
     int num;
     String cpf;
     double saldo;
-    Fila operacoes;
+    Lista operacoes;
 
     public ContaBancaria(int numero, String cpf, double sld){
         this.num = numero;
         this.cpf = cpf;
         this.saldo = sld;
-        this.operacoes = new Fila();
+        this.operacoes = new Lista();
     }
 
     public String dadosConta(){

@@ -1,10 +1,10 @@
 public class Entrada {
     
-    public String chave;    //chave do dado
-    public Cliente cliente; //dado que vai ser armazenado
-    public boolean valido;  //boolean que diz se o dado ainda e valido
+    public String chave;
+    public Cliente cliente;
+    public boolean valido;
 
-    public Entrada(){   //entrada vazia
+    public Entrada(){
         this.chave = "";
         this.cliente = null;
         this.valido = false;
@@ -16,19 +16,19 @@ public class Entrada {
         this.validar();
     }
 
-    public void invalidar(){    //deixa o dado invalido
+    public void invalidar(){
         this.valido = false;
     }
 
-    public void validar(){  //valida o dado
+    public void validar(){
         this.valido = true;
     }
 
-    public boolean checar(){   //checa se o dado e valido
+    public boolean checar(){
         return this.valido;
     }
 
-    public Cliente getValor(){  //retorna o dado naquela entrada
+    public Cliente getValor(){
             return this.cliente;
     }
 }
