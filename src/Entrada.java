@@ -1,18 +1,18 @@
 public class Entrada {
     
-    public String chave;
-    public Cliente cliente;
+    public long chave;
+    public Object dado;
     public boolean valido;
 
     public Entrada(){
-        this.chave = "";
-        this.cliente = null;
+        this.chave = -1;
+        this.dado = null;
         this.valido = false;
     }
 
-    public Entrada(String cpf, Cliente novo){
+    public Entrada(long cpf, Object novo){
         this.chave = cpf;
-        this.cliente = novo;
+        this.dado = novo;
         this.validar();
     }
 
@@ -28,7 +28,7 @@ public class Entrada {
         return this.valido;
     }
 
-    public Cliente getValor(){
-            return this.cliente;
+    public Object getValor(){
+        return this.dado;
     }
 }

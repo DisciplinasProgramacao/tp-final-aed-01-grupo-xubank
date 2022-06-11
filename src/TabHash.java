@@ -12,33 +12,26 @@ public class TabHash {
             dados[i] = new Entrada();
     }
 
-    public int calcularCodigo(String chave){
-        String codigo = chave.substring(0, 6);
-        return Integer.parseInt(codigo);
-    }
-
-    public int mapear(int codigo){
-        return codigo % tam;
+    public int mapear(Object qualquer){
+        return qualquer.hashCode() % tam;
     }
     
-    public int localizar(String key){
-        int pos = mapear(calcularCodigo(key));
-        int col = 1;
-        while(dados[pos].valido && !key.equals(dados[pos].chave)){
-            pos = (pos + col * col) % this.tam;
-            col++;
-        }
+    public int localizar(Object desejado){
+        int pos = mapear(desejado);
+        while(dados[pos].valido && !dados[pos].dado.equals(desejado))
+            pos = (pos + 1) % tam;
+
         return pos;
     }
 
-    public void inserir(String chave, Cliente novo){
+    public void inserir(long chave, Object novo){
         Entrada nova = new Entrada(chave, novo);
-        int pos = localizar(chave);
+        int pos = localizar(novo);
         dados[pos] = nova;
     }
 
-    public Cliente buscar(String chave){
-        int pos = localizar(chave);
+    public Object buscar(Object desejado){
+        int pos = localizar(desejado);
         return dados[pos].getValor();
     }
 }

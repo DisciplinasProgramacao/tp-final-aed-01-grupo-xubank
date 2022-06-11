@@ -10,31 +10,10 @@ public class App {
     static final String arquivoClientes = "clientes.txt";
     static final String arquivoOperacoes = "operacoes.txt";
     static TabHash clientes;
-    static Lista contas;
+    static TabHash contas;
     static Lista operacoes;
     static int quantContas;
     static int quantClientes;
-
-    public static Lista listarContas() throws FileNotFoundException{
-        Lista novasContas = new Lista();
-        Scanner arquivo = new Scanner(new File(arquivoContas));
-        int qtd = 0;
-
-        while(arquivo.hasNextLine()){
-            String[] dados = arquivo.nextLine().split(";");
-
-            int numero = Integer.parseInt(dados[0]);
-            String cpf = (dados[1]);
-            double saldo = Double.parseDouble(dados[2].replace(",", "."));
-
-            ContaBancaria nova = new ContaBancaria(numero, cpf, saldo);
-            novasContas.inserir(nova);
-            qtd++;
-        }
-        arquivo.close();
-        quantContas = qtd;
-        return novasContas;
-    }
 
     public static TabHash listarClientes() throws FileNotFoundException{
         Scanner arquivo = new Scanner(new File(arquivoClientes));
@@ -46,7 +25,7 @@ public class App {
 
             String dados[] = arquivo.nextLine().split(";");
 
-            String cpf = dados[0];
+            long cpf = Long.parseLong(dados[0]);
             String nome = dados[1];
 
             Cliente novo = new Cliente(cpf, nome);
@@ -56,6 +35,41 @@ public class App {
         quantClientes = quant;
         return novosClientes;
     }
+
+    public static TabHash listarContas() throws FileNotFoundException{
+        Scanner arquivo = new Scanner(new File(arquivoContas));
+        int quant = Integer.parseInt(arquivo.nextLine());
+        int tam = (int)(quant * 1.25);
+        TabHash novasContas = new TabHash(tam);
+
+        for(int i = 0; i < quant; i++){
+
+            String dados[] = arquivo.nextLine().split(";");
+
+            int numero = Integer.parseInt(dados[0]);
+            long cpf = Long.parseLong(dados[1]);
+            double saldo = Double.parseDouble(dados[2].replace(",", "."));
+
+            ContaBancaria nova = new ContaBancaria(numero, cpf, saldo);
+            novasContas.inserir(numero, nova);
+            cadastrarContaNaListaDoCliente(null, nova);
+        }
+        arquivo.close();
+        quantClientes = quant;
+        return novasContas;
+    }
+
+    /*
+     String[] dados = arquivo.nextLine().split(";");
+
+            int numero = Integer.parseInt(dados[0]);
+            String cpf = (dados[1]);
+            double saldo = Double.parseDouble(dados[2].replace(",", "."));
+
+            ContaBancaria nova = new ContaBancaria(numero, cpf, saldo);
+            novasContas.inserir(nova);
+            cadastrarContaNaListaDoCliente(null, nova);
+     */
 
     /*public static Fila enfileirarOperacoes() throws FileNotFoundException{
         Scanner arquivo = new Scanner(new File(arquivoOperacoes));
@@ -167,13 +181,15 @@ public class App {
     }
 
     public static void cadastrarContaNaListaDoCliente(Scanner teclado, ContaBancaria conta){
-        Cliente aux = clientes.buscar(conta.cpf);
-        if(aux == null){
+        Cliente aux = new Cliente(conta.cpf, "");
+        Cliente desejado = (Cliente) clientes.buscar(aux);
+        //clientes.buscar(conta.cpf);
+        /*if(aux == null){
             String nome = lerTeclado("Nome do cliente: ", teclado);
             aux = new Cliente(conta.cpf, nome);
             clientes.inserir(conta.cpf, aux);
             quantClientes++;
-        }
+        }*/
         aux.cntsCliente.inserir(conta);
     }
 
@@ -208,10 +224,12 @@ public class App {
 
     public static void main(String[] args) throws Exception{
         Scanner teclado = new Scanner(System.in);
+        clientes = listarClientes();
         contas = listarContas();
+        System.out.println(" ");
+        /*
         operacoes = enfileirarOperacoes();
         carregarOperacoesDeCadaConta();
-        clientes = listarClientes();
         carregarListaDeCadaCliente();
 
         int opcao, num;
@@ -318,6 +336,6 @@ public class App {
         teclado.close();
         salvarDadosOperacoes();
         salvarDadosClientes();
-        salvarDadosContas();
+        salvarDadosContas();*/
     }
 }
