@@ -1,8 +1,8 @@
 public class Operacao {
-    int num;
-    int codigo;
-    double valor;
-    String data;
+    public int num;
+    public int codigo;
+    public double valor;
+    public String data;
 
     public Operacao(int numConta, int codOpera, double valor, String dia){
         this.num = numConta;
