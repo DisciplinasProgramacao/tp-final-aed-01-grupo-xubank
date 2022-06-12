@@ -11,18 +11,18 @@ public class Operacao {
         this.data = dia;
     }
 
-    public String checarOperacao(){
+    public String tipoDeOperacao(int cdg){
         String tipo = "";
-        if(this.codigo == 0)
+        if(cdg == 0)
             tipo = "Deposito";
-        if(this.codigo == 1)
+        if(cdg == 1)
             tipo = "Saque";
         return tipo;
     }
 
     @Override
     public String toString(){
-        String s = new String("Conta número: " + this.num + ", Operacao: " + checarOperacao() + ", Valor: " + this.valor + ", Data: " + this.data);
+        String s = new String("Conta número: " + this.num + " | Operacao: " + tipoDeOperacao(this.codigo) + " | Valor: " + this.valor + " | Realizado: " + this.data);
         return s;
     }
 }

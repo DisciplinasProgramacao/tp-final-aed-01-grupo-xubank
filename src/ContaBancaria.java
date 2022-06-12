@@ -1,3 +1,6 @@
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
 public class ContaBancaria implements IComparavel{
 
     public int num;
@@ -28,7 +31,7 @@ public class ContaBancaria implements IComparavel{
 
     @Override
     public String toString(){
-        String dadosConta = "Conta Número: " + this.num + ", CPF: " + this.cpf + ", Saldo: " + this.saldo;
+        String dadosConta = "Conta Número: " + this.num + " | CPF: " + this.cpf + " | Saldo: " + this.saldo;
         return dadosConta;
     }
 
@@ -54,5 +57,21 @@ public class ContaBancaria implements IComparavel{
             return true;
 
         return false;
+    }
+
+    public Operacao realizarOperacao(int codigo, double valor){
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        Operacao nova = new Operacao(this.num, codigo, valor, dtf.format(LocalDateTime.now()));
+        this.operacoes.inserir(nova);
+        switch(codigo){
+        case 0:
+        this.saldo = this.saldo + valor;
+        break;
+
+        case 1:
+        this.saldo = this.saldo - valor;
+        break;
+        }
+        return nova;
     }
 }

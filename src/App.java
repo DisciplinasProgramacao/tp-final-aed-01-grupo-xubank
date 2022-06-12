@@ -161,7 +161,7 @@ public class App {
             cadastrarNovoCliente(teclado, conta.cpf);
 
         desejado.contasDoCliente.inserir(conta);
-        desejado.saldoTotal += conta.saldo;
+        desejado.saldo += conta.saldo;
     }
 
     public static void cadastrarNovoCliente(Scanner teclado, long cpfCliente){
@@ -171,14 +171,27 @@ public class App {
         quantClientes++;
     }
 
+    public static ContaBancaria localizarConta(int num){
+        ContaBancaria mock = new ContaBancaria(num, 00000000000, 0);
+        ContaBancaria requerida = (ContaBancaria)contas.buscar(mock);
+        return requerida;
+    }
+
+    public static Cliente localizarCliente(long cpfDoCliente){
+        Cliente mock = new Cliente(cpfDoCliente, "");
+        Cliente requerido = (Cliente)clientes.buscar(mock);
+        return requerido;
+    }
+
     public static int mostrarMenu(Scanner teclado){
         System.out.println("CONTAS BANCARIAS XUBANK");
         System.out.println("===========================");
-        System.out.println("1 - Consultar conta");
-        System.out.println("2 - Consultar cliente");
-        System.out.println("3 - Adicionar conta");
-        System.out.println("4 - Exibir contas ordenadas");
+        System.out.println("1 - Consultar Conta");
+        System.out.println("2 - Consultar Cliente");
+        System.out.println("3 - Adicionar Conta");
+        System.out.println("4 - Exibir Contas Ordenadas");
         System.out.println("5 - Checar Extrato");
+        System.out.println("6 - Realizar Operacao");
         System.out.println("0 - Sair");
 
         int opcao = Integer.parseInt(teclado.nextLine());
@@ -254,8 +267,7 @@ public class App {
                 limparTela();
 
                 cpf = Long.parseLong(lerTeclado("CPF: ", teclado));
-                Cliente clienteAux = new Cliente(cpf, "");
-                Cliente desejado = (Cliente)clientes.buscar(clienteAux);
+                Cliente desejado = localizarCliente(cpf);
 
                 if(desejado != null){
                     limparTela();
@@ -315,14 +327,32 @@ public class App {
                 case 5:
                 limparTela();
                 num = Integer.parseInt(lerTeclado("numero da conta: ", teclado));
-                contaAux = new ContaBancaria(num, -1, 0);
-                desejada = (ContaBancaria)contas.buscar(contaAux);
+                desejada = localizarConta(num);
                 if(desejada != null){
                     limparTela();
                     System.out.println(desejada.imprimirExtratoDaConta());
                 }
                 else
                     System.out.println("Conta não encontrada");
+                pausar(teclado);
+                break;
+
+                case 6:
+                do{
+                    limparTela();
+                    num = Integer.parseInt(lerTeclado("numero da conta: ", teclado));
+                    desejada = localizarConta(num);
+                    if(desejada==null){
+                        System.out.println("Conta não existe.");
+                        pausar(teclado);
+                    }
+                }while(desejada==null);
+                int codigo = Integer.parseInt(lerTeclado("0 para deposito e 1 para saque: ", teclado));
+                double valor = Double.parseDouble(lerTeclado("valor: ", teclado));
+                Operacao op = desejada.realizarOperacao(codigo, valor);
+                System.out.println(op.tipoDeOperacao(codigo) + " realizado no valor de: " + valor + "\nNovo saldo da conta: " + desejada.saldo);
+                Cliente donoDaConta = localizarCliente(desejada.cpf);
+                donoDaConta.atualizarSaldo();
                 pausar(teclado);
                 break;
 
