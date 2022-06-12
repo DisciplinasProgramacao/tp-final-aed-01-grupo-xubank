@@ -1,9 +1,9 @@
-public class ContaBancaria {
+public class ContaBancaria implements IComparavel{
 
-    int num;
-    long cpf;
-    double saldo;
-    Lista operacoes;
+    public int num;
+    public long cpf;
+    public double saldo;
+    public Lista operacoes;
 
     public ContaBancaria(int numero, long cpf, double sld){
         this.num = numero;
@@ -36,5 +36,23 @@ public class ContaBancaria {
         String extrato = ("EXTRATO BANCARIO\n===================================================================\n");
         extrato += operacoes.toString();
         return extrato;
+    }
+
+    @Override
+    public boolean maiorQue(IComparavel outro) {
+        ContaBancaria outraConta = (ContaBancaria)outro;
+        if(this.num > outraConta.num)
+            return true;
+            
+        return false;
+    }
+
+    @Override
+    public boolean menorQue(IComparavel outro) {
+        ContaBancaria outraConta = (ContaBancaria)outro;
+        if(this.num < outraConta.num)
+            return true;
+
+        return false;
     }
 }

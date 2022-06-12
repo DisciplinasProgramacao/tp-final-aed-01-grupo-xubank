@@ -1,4 +1,4 @@
 public interface IComparavel {
-    boolean maiorQue();
-    boolean menorQue();
+    boolean maiorQue(IComparavel outro);
+    boolean menorQue(IComparavel outro);
 }
