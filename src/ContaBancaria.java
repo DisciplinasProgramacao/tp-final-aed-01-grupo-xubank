@@ -31,13 +31,13 @@ public class ContaBancaria implements IComparavel{
 
     @Override
     public String toString(){
-        String dadosConta = "Conta Número: " + this.num + " | CPF: " + this.cpf + " | Saldo: " + this.saldo;
-        return dadosConta;
+        return "Conta Número: " + this.num + " | CPF: " + this.cpf + " | Saldo: " + this.saldo;
     }
 
     public String imprimirExtratoDaConta(){
         String extrato = ("EXTRATO BANCARIO\n===================================================================\n");
         extrato += operacoes.toString();
+        extrato += "Saldo total da conta: " + this.saldo + "\n";
         return extrato;
     }
 
@@ -59,19 +59,29 @@ public class ContaBancaria implements IComparavel{
         return false;
     }
 
-    public Operacao realizarOperacao(int codigo, double valor){
+    /**
+     * realiza uma nova operacao e adiciona a mesma a fila de operacoes desssa conta
+     * @param codigo codigo da operacao, sendo, 0 para deposito e 1 para saque
+     * @param valor o valor a ser depositado ou retirado da conta
+     * @return a operacao que foi adicionada a fila de operacoes desta conta
+     */
+    public Operacao novaOperacao(int codigo, double valor){
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-        Operacao nova = new Operacao(this.num, codigo, valor, dtf.format(LocalDateTime.now()));
+        String hoje = dtf.format(LocalDateTime.now());
+        Operacao nova = new Operacao(this.num, codigo, valor, hoje);
+        realizarOperacao(nova);
         this.operacoes.inserir(nova);
-        switch(codigo){
-        case 0:
-        this.saldo = this.saldo + valor;
-        break;
-
-        case 1:
-        this.saldo = this.saldo - valor;
-        break;
-        }
         return nova;
+    }
+
+    /**
+     * realiza uma operacao nessa conta
+     * @param operacao uma operacao que sera realizada
+     */
+    public void realizarOperacao(Operacao operacao){
+        double valorOperacao = operacao.valor;
+        if(operacao.codigo == 1)
+            valorOperacao = -operacao.valor;
+        this.saldo += valorOperacao;
     }
 }

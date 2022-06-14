@@ -32,8 +32,7 @@ public class Cliente implements IComparavel{
     public String toString(){
         DecimalFormat formatador = new DecimalFormat("0.00");
         String dados = "Cliente: " + this.nome + " | CPF: " + this.cpf + " | Saldo total: " + formatador.format(saldo) + "\n";
-        dados += contasDoCliente.toString();
-        return dados;
+        return dados += contasDoCliente.toString();
     }
 
     @Override
@@ -54,14 +53,28 @@ public class Cliente implements IComparavel{
         return false;
     }
 
-    public void atualizarSaldo(){
+    public ContaBancaria buscarConta(int numConta){
         Elemento aux = this.contasDoCliente.prim.prox;
-        double saldoTodasContas = 0;
         while(aux != null){
-            ContaBancaria conta = (ContaBancaria)aux.dado;
-            saldoTodasContas += conta.saldo;
+            ContaBancaria qualquer = (ContaBancaria)aux.dado;
+            if(numConta == qualquer.num)
+                return qualquer;
             aux = aux.prox;
         }
-        this.saldo = saldoTodasContas;
+        return null;
+    }
+
+    public void inserirNovaConta(ContaBancaria nova){
+        this.contasDoCliente.inserir(nova);
+    }
+
+    /**
+     * Atualiza o saldo total do cliente, acrescentando ou diminuindo o valor da operacao
+     */
+    public void atualizarSaldo(int codigo, double valor){
+        if(codigo == 1)
+            valor = -valor;
+        
+        this.saldo += valor;
     }
 }

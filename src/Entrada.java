@@ -24,7 +24,7 @@ public class Entrada {
         this.valido = true;
     }
 
-    public boolean checarValidez(){
+    public boolean estahValido(){
         return this.valido;
     }
 

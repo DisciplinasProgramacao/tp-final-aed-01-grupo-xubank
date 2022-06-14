@@ -18,8 +18,9 @@ public class TabHash {
     
     public int localizar(Object desejado){
         int pos = mapear(desejado);
-        while(dados[pos].checarValidez() && !dados[pos].dado.equals(desejado))
+        while(dados[pos].estahValido() && !dados[pos].dado.equals(desejado)){
             pos = (pos + 1) % tam;
+        }
 
         return pos;
     }
