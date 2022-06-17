@@ -54,27 +54,36 @@ public class Cliente implements IComparavel{
     }
 
     public ContaBancaria buscarConta(int numConta){
-        Elemento aux = this.contasDoCliente.prim.prox;
-        while(aux != null){
-            ContaBancaria qualquer = (ContaBancaria)aux.dado;
-            if(numConta == qualquer.num)
-                return qualquer;
-            aux = aux.prox;
-        }
-        return null;
+        ContaBancaria mock = new ContaBancaria(numConta, 00000000000, 0);
+        ContaBancaria buscada = (ContaBancaria) this.contasDoCliente.buscar(mock);
+        return buscada;
     }
 
     public void inserirNovaConta(ContaBancaria nova){
         this.contasDoCliente.inserir(nova);
+        this.saldo += nova.saldo;
     }
 
     /**
-     * Atualiza o saldo total do cliente, acrescentando ou diminuindo o valor da operacao
+     * Calcula o saldo total do cliente, percorrendo sua lista de contas e somando o saldo de cada conta.
      */
-    public void atualizarSaldo(int codigo, double valor){
-        if(codigo == 1)
-            valor = -valor;
-        
-        this.saldo += valor;
+    public double calcularSaldoTotal(){
+        double saldoTotal = 0;
+        Elemento aux = this.contasDoCliente.prim.prox;
+        while(aux != null){
+            ContaBancaria essaConta = (ContaBancaria)aux.dado;
+            saldoTotal += essaConta.saldo;
+        }
+        return saldoTotal;
+    }
+
+    /**
+     * realiza a operacao em uma conta deste cliente e depois atualiza o saldo total do mesmo
+     * @param op uma operacao que sera realizada
+     */
+    public void realizarOperacaoEmContaDoCliente(Operacao op){
+        ContaBancaria contaOp = this.buscarConta(op.num);
+        contaOp.realizarOperacao(op);
+        this.saldo = this.calcularSaldoTotal();
     }
 }

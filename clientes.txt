@@ -1,6 +1,6 @@
 995
 41391932453;Emanuella Silveira
-97202590222;Ana Cristina de Mari Rocha
+50465615908;Sofia Freitas
 19515637973;Clara Duarte
 42884021063;Helena Ramos
 43257194097;Stella Moura
@@ -992,5 +992,5 @@
 44125433379;Maria Clara Oliveira
 29955406696;Theo da Cunha
 57799102059;Caroline Silva
-50465615908;Sofia Freitas
 41516018036;Carolina Mendes
+97202590222;Ana Cristina de Mari Rocha

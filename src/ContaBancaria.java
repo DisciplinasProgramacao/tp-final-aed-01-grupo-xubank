@@ -1,6 +1,3 @@
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-
 public class ContaBancaria implements IComparavel{
 
     public int num;
@@ -60,28 +57,12 @@ public class ContaBancaria implements IComparavel{
     }
 
     /**
-     * realiza uma nova operacao e adiciona a mesma a fila de operacoes desssa conta
-     * @param codigo codigo da operacao, sendo, 0 para deposito e 1 para saque
-     * @param valor o valor a ser depositado ou retirado da conta
-     * @return a operacao que foi adicionada a fila de operacoes desta conta
+     * realiza uma operacao de saque ou deposito e insere na lista desta conta
+     * @param op uma operacao que sera realizada
      */
-    public Operacao novaOperacao(int codigo, double valor){
-        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-        String hoje = dtf.format(LocalDateTime.now());
-        Operacao nova = new Operacao(this.num, codigo, valor, hoje);
-        realizarOperacao(nova);
-        this.operacoes.inserir(nova);
-        return nova;
-    }
-
-    /**
-     * realiza uma operacao nessa conta
-     * @param operacao uma operacao que sera realizada
-     */
-    public void realizarOperacao(Operacao operacao){
-        double valorOperacao = operacao.valor;
-        if(operacao.codigo == 1)
-            valorOperacao = -operacao.valor;
+    public void realizarOperacao(Operacao op){
+        double valorOperacao = op.checarOperacao();
         this.saldo += valorOperacao;
+        this.operacoes.inserir(op);
     }
 }

@@ -22,6 +22,14 @@ public class Operacao {
             return "Saque";
     }
 
+    public double checarOperacao(){
+        double valorOp = this.valor;
+        if(this.codigo == 1)
+            valorOp = -valorOp;
+        
+        return valorOp;
+    }
+
     @Override
     public String toString(){
         return "Conta número: " + this.num + " | Operacao: " + tipoDeOperacao() + " | Valor: " + this.valor + " | Realizado: " + this.data;

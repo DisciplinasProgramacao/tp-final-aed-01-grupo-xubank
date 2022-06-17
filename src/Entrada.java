@@ -10,8 +10,8 @@ public class Entrada {
         this.valido = false;
     }
 
-    public Entrada(long cpf, Object novo){
-        this.chave = cpf;
+    public Entrada(long novaChave, Object novo){
+        this.chave = novaChave;
         this.dado = novo;
         this.validar();
     }

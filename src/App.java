@@ -1,11 +1,14 @@
 import java.io.File;
-import java.io.FileNotFoundException;
+import java.util.Scanner;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.Scanner;
+import java.time.LocalDateTime;
+import java.io.FileNotFoundException;
+import java.time.format.DateTimeFormatter;
 
 public class App {
 
+    public static DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy");
     static final String arquivoContas = "contas-bancarias.txt";
     static final String arquivoClientes = "clientes.txt";
     static final String arquivoOperacoes = "operacoes.txt";
@@ -207,7 +210,7 @@ public class App {
         System.out.println("1 - Exibir Contas Ordenadas");
         System.out.println("2 - Dados da Conta Com Maior Saldo");
         System.out.println("3 - Saldo Medio dos Clientes do Banco");
-        System.out.println("4 - Checar As 10 Clientes Com Maior Saldo");
+        System.out.println("4 - Checar Os 10 Clientes Com Maior Saldo");
         System.out.println("0 - Voltar Ao Menu Anterior");
 
         int opcao = Integer.parseInt(teclado.nextLine());
@@ -391,9 +394,9 @@ public class App {
                                 codigo = Integer.parseInt(lerTeclado("0 para deposito e 1 para saque: ", teclado));
                             }while(codigo != 0 && codigo != 1);
                             double valor = Double.parseDouble(lerTeclado("valor: ", teclado));
-                            Operacao op = desejada.novaOperacao(codigo, valor);
-                            requerido.atualizarSaldo(codigo, valor);
-                            System.out.println(op.tipoDeOperacao() + " realizado no valor de: " + valor + "\nNovo saldo da conta: " + desejada.saldo);
+                            Operacao op = new Operacao(num, codigo, valor, dtf.format(LocalDateTime.now()));
+                            requerido.realizarOperacaoEmContaDoCliente(op);
+                            System.out.println(op.tipoDeOperacao() + " realizado no valor de: " + op.valor + "\nNovo saldo da conta: " + desejada.saldo);
                         }
                         pausar(teclado);
                         break;
