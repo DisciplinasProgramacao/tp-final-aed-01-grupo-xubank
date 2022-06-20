@@ -17,6 +17,21 @@ public class App {
     static Lista operacoes;
     static int quantContas;
     static int quantClientes;
+    static double maiorSaldo = 0;
+    static int contaMaiorSaldo;
+    static double totalSaldo;
+    static double saldoMedioClientes = 0;
+
+    public static void compararMaiorSaldo (Double novoValor, int conta) {
+        if (maiorSaldo < novoValor) {
+            maiorSaldo = novoValor;
+            contaMaiorSaldo = conta;
+        }
+    }
+
+    public static void saldoMedio ( int quantClientes, double saldo) {
+        saldoMedioClientes = saldo / quantClientes;
+    }
 
     public static TabHash carregarClientes() throws FileNotFoundException{
         Scanner arquivo = new Scanner(new File(arquivoClientes));
@@ -52,6 +67,8 @@ public class App {
             int numero = Integer.parseInt(dados[0]);
             long cpf = Long.parseLong(dados[1]);
             double saldo = Double.parseDouble(dados[2].replace(",", "."));
+            compararMaiorSaldo(saldo, numero);
+            totalSaldo = totalSaldo + saldo;
 
             ContaBancaria nova = new ContaBancaria(numero, cpf, saldo);
             novasContas.inserir(numero, nova);
@@ -60,6 +77,7 @@ public class App {
         }
         arquivo.close();
         quantContas = quant;
+        saldoMedio(quantContas, totalSaldo);
         return novasContas;
     }
 
@@ -287,6 +305,18 @@ public class App {
                         System.out.println("Arquivo aberto");
                         pausar(teclado);
                         ordenado.delete();
+                        break;
+                        case 2:
+                        limparTela();
+                        System.out.println("===================Conta com maior saldo=====================");
+                        System.out.println("Numero da conta: " + contaMaiorSaldo + "," + " saldo da conta: " + maiorSaldo);
+                        pausar(teclado);
+                        break;
+                        case 3:
+                        limparTela();
+                        System.out.println("===================Saldo médio =====================");
+                        System.out.println("O saldo medio de contas é: " + saldoMedioClientes);
+                        pausar(teclado);
                         break;
 
                         case 4:
