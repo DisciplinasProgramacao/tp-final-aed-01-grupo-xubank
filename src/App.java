@@ -9,6 +9,7 @@ import java.time.format.DateTimeFormatter;
 public class App {
 
     public static DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+<<<<<<< HEAD
     public static final String arquivoClientes = "Banco_Clientes2022.txt";
     public static final String arquivoContas = "Banco_Contas2022.txt";
     public static final String arquivoOperacoes = "Banco_Operacoes2022.txt";
@@ -17,6 +18,31 @@ public class App {
     public static Lista operacoes;
     public static int quantContas;
     public static int quantClientes;
+=======
+    static final String arquivoContas = "contas-bancarias.txt";
+    static final String arquivoClientes = "clientes.txt";
+    static final String arquivoOperacoes = "operacoes.txt";
+    static TabHash clientes;
+    static TabHash contas;
+    static Lista operacoes;
+    static int quantContas;
+    static int quantClientes;
+    static double maiorSaldo = 0;
+    static int contaMaiorSaldo;
+    static double totalSaldo;
+    static double saldoMedioClientes = 0;
+
+    public static void compararMaiorSaldo (Double novoValor, int conta) {
+        if (maiorSaldo < novoValor) {
+            maiorSaldo = novoValor;
+            contaMaiorSaldo = conta;
+        }
+    }
+
+    public static void saldoMedio ( int quantClientes, double saldo) {
+        saldoMedioClientes = saldo / quantClientes;
+    }
+>>>>>>> acfdacb9319a19886819f1e763e30b7aaf743253
 
     public static TabHash carregarClientes() throws FileNotFoundException{
         Scanner arquivo = new Scanner(new File(arquivoClientes));
@@ -49,8 +75,15 @@ public class App {
             String dados[] = arquivo.nextLine().split(";");
 
             int numero = Integer.parseInt(dados[0]);
+<<<<<<< HEAD
             String cpf = dados[1];
             double saldo = Double.parseDouble(dados[2]);
+=======
+            long cpf = Long.parseLong(dados[1]);
+            double saldo = Double.parseDouble(dados[2].replace(",", "."));
+            compararMaiorSaldo(saldo, numero);
+            totalSaldo = totalSaldo + saldo;
+>>>>>>> acfdacb9319a19886819f1e763e30b7aaf743253
 
             ContaBancaria nova = new ContaBancaria(numero, cpf, saldo);
             String chave = Integer.toString(numero);
@@ -60,6 +93,7 @@ public class App {
         }
         arquivo.close();
         quantContas = quant;
+        saldoMedio(quantContas, totalSaldo);
         return novasContas;
     }
 
@@ -268,6 +302,18 @@ public class App {
                         System.out.println("Arquivo aberto");
                         pausar(teclado);
                         ordenado.delete();
+                        break;
+                        case 2:
+                        limparTela();
+                        System.out.println("===================Conta com maior saldo=====================");
+                        System.out.println("Numero da conta: " + contaMaiorSaldo + "," + " saldo da conta: " + maiorSaldo);
+                        pausar(teclado);
+                        break;
+                        case 3:
+                        limparTela();
+                        System.out.println("===================Saldo médio =====================");
+                        System.out.println("O saldo medio de contas é: " + saldoMedioClientes);
+                        pausar(teclado);
                         break;
 
                         case 4:
