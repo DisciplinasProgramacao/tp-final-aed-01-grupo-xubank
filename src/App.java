@@ -9,26 +9,25 @@ import java.time.format.DateTimeFormatter;
 public class App {
 
     public static DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-    static final String arquivoContas = "contas-bancarias.txt";
-    static final String arquivoClientes = "clientes.txt";
-    static final String arquivoOperacoes = "operacoes.txt";
-    static TabHash clientes;
-    static TabHash contas;
-    static Lista operacoes;
-    static int quantContas;
-    static int quantClientes;
+    public static final String arquivoClientes = "Banco_Clientes2022.txt";
+    public static final String arquivoContas = "Banco_Contas2022.txt";
+    public static final String arquivoOperacoes = "Banco_Operacoes2022.txt";
+    public static TabHash clientes;
+    public static TabHash contas;
+    public static Lista operacoes;
+    public static int quantContas;
+    public static int quantClientes;
 
     public static TabHash carregarClientes() throws FileNotFoundException{
         Scanner arquivo = new Scanner(new File(arquivoClientes));
         int quant = Integer.parseInt(arquivo.nextLine());
-        int tam = (int)(quant * 1.25);
+        int tam = (int)(quant * 1.33);
         TabHash novosClientes = new TabHash(tam);
 
         for(int i = 0; i < quant; i++){
 
             String dados[] = arquivo.nextLine().split(";");
-
-            long cpf = Long.parseLong(dados[0]);
+            String cpf = dados[0];
             String nome = dados[1];
 
             Cliente novo = new Cliente(cpf, nome);
@@ -42,7 +41,7 @@ public class App {
     public static TabHash carregarContas() throws FileNotFoundException{
         Scanner arquivo = new Scanner(new File(arquivoContas));
         int quant = Integer.parseInt(arquivo.nextLine());
-        int tam = (int)(quant * 1.25);
+        int tam = (int)(quant * 1.33);
         TabHash novasContas = new TabHash(tam);
 
         for(int i = 0; i < quant; i++){
@@ -50,11 +49,12 @@ public class App {
             String dados[] = arquivo.nextLine().split(";");
 
             int numero = Integer.parseInt(dados[0]);
-            long cpf = Long.parseLong(dados[1]);
-            double saldo = Double.parseDouble(dados[2].replace(",", "."));
+            String cpf = dados[1];
+            double saldo = Double.parseDouble(dados[2]);
 
             ContaBancaria nova = new ContaBancaria(numero, cpf, saldo);
-            novasContas.inserir(numero, nova);
+            String chave = Integer.toString(numero);
+            novasContas.inserir(chave, nova);
             Cliente aux = localizarCliente(nova.cpf);
             aux.inserirNovaConta(nova);
         }
@@ -76,17 +76,12 @@ public class App {
             String data = (dados[3]);
 
             Operacao nova = new Operacao(numero, codigo, valor, data);
-            inserirOperacaoNaConta(nova);
+            ContaBancaria desejada = localizarConta(numero);
+            desejada.inserirOperacaoNaConta(nova);
         }
         arquivo.close();
     }
 
-    public static void inserirOperacaoNaConta(Operacao nova){
-        ContaBancaria aux = new ContaBancaria(nova.num, -1, 0);
-        ContaBancaria desejada = (ContaBancaria)contas.buscar(aux);
-        desejada.operacoes.inserir(nova);
-    }
-    
     public static void salvarDadosClientes() throws IOException{
         FileWriter escritor = new FileWriter(arquivoClientes, false);
         Entrada[] dados = clientes.dados;
@@ -142,11 +137,12 @@ public class App {
         IComparavel pivot = dados[fim];
         int part = inicio - 1;
 
-        for (int i = inicio; i < fim; i++)
+        for (int i = inicio; i < fim; i++){
             if(dados[i].menorQue(pivot)){
                 part++;
                 trocar(dados, part, i);
             }
+        }
         part++;
         trocar(dados, part, fim);
         return part;
@@ -158,7 +154,7 @@ public class App {
         dados[pos2] = aux;
     }
 
-    public static Cliente cadastrarNovoCliente(Scanner teclado, long cpfCliente){
+    public static Cliente cadastrarNovoCliente(Scanner teclado, String cpfCliente){
         String nome = lerTeclado("Nome do cliente: ", teclado);
         Cliente novo = new Cliente(cpfCliente, nome);
         clientes.inserir(cpfCliente, novo);
@@ -167,31 +163,14 @@ public class App {
     }
 
     public static ContaBancaria localizarConta(int num){
-        ContaBancaria mock = new ContaBancaria(num, 00000000000, 0);
-        ContaBancaria requerida = (ContaBancaria)contas.buscar(mock);
+        ContaBancaria requerida = (ContaBancaria)contas.buscar(new ContaBancaria(num, "", 0));
         return requerida;
     }
 
-    public static Cliente localizarCliente(long cpfDoCliente){
-        Cliente mock = new Cliente(cpfDoCliente, "");
-        Cliente requerido = (Cliente)clientes.buscar(mock);
+    public static Cliente localizarCliente(String cpfDoCliente){
+        Cliente requerido = (Cliente)clientes.buscar(new Cliente(cpfDoCliente, ""));
         return requerido;
     }
-
-    /*public static int mostrarMenu(Scanner teclado){
-        System.out.println("CONTAS BANCARIAS XUBANK");
-        System.out.println("===========================");
-        System.out.println("1 - Consultar Conta");
-        System.out.println("2 - Consultar Cliente");
-        System.out.println("3 - Adicionar Conta");
-        System.out.println("4 - Exibir Contas Ordenadas");
-        System.out.println("5 - Checar Extrato");
-        System.out.println("6 - Realizar Operacao");
-        System.out.println("0 - Sair");
-
-        int opcao = Integer.parseInt(teclado.nextLine());
-        return opcao;
-    }*/
 
     public static int mostrarMenu(Scanner teclado){
         System.out.println("CONTAS BANCARIAS XUBANK");
@@ -251,8 +230,10 @@ public class App {
         clientes = carregarClientes();
         contas = carregarContas();
         carregarOperacoes();
+        System.out.println("clientes: " + clientes.colisoes + " - contas: " + contas.colisoes);
+        System.out.println("");
         int opcao, num, opc;
-        long cpf;
+        String cpf;
 
         do{
             limparTela();
@@ -276,7 +257,7 @@ public class App {
                                 j++;
                             }
                         }
-                        ordenar(ordenadas, 0, quantContas - 1);
+                        ordenar(ordenadas, 0, ordenadas.length - 1);
                         File ordenado = new File("contas-ordenadas.txt");
                         FileWriter gravador = new FileWriter(ordenado, false);
                         for(ContaBancaria conta : ordenadas)
@@ -299,6 +280,7 @@ public class App {
                                 j++;
                             }
                         }
+                        System.out.println("");
                         ordenar(maisRicos, 0, maisRicos.length - 1);
                         System.out.println("OS DEZ CLIENTES COM MAIOR SALDO");
                         System.out.println("===============================");
@@ -316,12 +298,12 @@ public class App {
                     limparTela();
                     System.out.println("OPERAR CONTA DE UM CLIENTE");
                     System.out.println("==========================");
-                    cpf = Long.parseLong(lerTeclado("CPF do Cliente: ", teclado));
+                    cpf = lerTeclado("CPF do Cliente: ", teclado);
                     requerido = localizarCliente(cpf);
                     if(requerido == null)
                         System.out.println("Cliente não encontrado");
                     pausar(teclado);
-                }while(requerido == null && cpf != 00000000000);
+                }while(requerido == null);
 
                 do{
                 limparTela();
@@ -359,7 +341,7 @@ public class App {
                             }
                         }while(aux!=null);
                         ContaBancaria nova = new ContaBancaria(num, requerido.cpf, 0);
-                        contas.inserir(nova.num, nova);
+                        contas.inserir(Integer.toString(nova.num), nova);
                         requerido.inserirNovaConta(nova);
                         System.out.println("Nova conta criada");
                         pausar(teclado);

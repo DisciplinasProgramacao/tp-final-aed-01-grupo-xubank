@@ -1,11 +1,11 @@
 public class ContaBancaria implements IComparavel{
 
     public int num;
-    public long cpf;
+    public String cpf;
     public double saldo;
     public Lista operacoes;
 
-    public ContaBancaria(int numero, long cpf, double sld){
+    public ContaBancaria(int numero, String cpf, double sld){
         this.num = numero;
         this.cpf = cpf;
         this.saldo = sld;
@@ -54,6 +54,10 @@ public class ContaBancaria implements IComparavel{
             return true;
 
         return false;
+    }
+
+    public void inserirOperacaoNaConta(Operacao op){
+        this.operacoes.inserir(op);
     }
 
     /**

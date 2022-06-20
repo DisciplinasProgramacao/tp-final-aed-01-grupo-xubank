@@ -2,22 +2,22 @@ import java.text.DecimalFormat;
 
 public class Cliente implements IComparavel{
 
-    public long cpf;
+    public String cpf;
     public String nome;
     public Lista contasDoCliente;
-    public double saldo;
+    public double saldoTotal;
 
-    public Cliente(long cpfNovo, String nomeNovo){
+    public Cliente(String cpfNovo, String nomeNovo){
         this.cpf = cpfNovo;
         this.nome = nomeNovo;
         this.contasDoCliente = new Lista();
-        this.saldo = 0;
+        this.saldoTotal = 0;
     }
 
     @Override
     public boolean equals(Object outro){
         Cliente outroCliente = (Cliente)outro;
-        if(this.cpf == outroCliente.cpf)
+        if(this.cpf.equals(outroCliente.cpf))
             return true;
 
         return false;
@@ -25,20 +25,21 @@ public class Cliente implements IComparavel{
 
     @Override
     public int hashCode(){
-        return (int)(this.cpf / 100000);
+        int codigo = Integer.parseInt(this.cpf.substring(0, 9));
+        return (int) codigo;
     }
     
     @Override
     public String toString(){
         DecimalFormat formatador = new DecimalFormat("0.00");
-        String dados = "Cliente: " + this.nome + " | CPF: " + this.cpf + " | Saldo total: " + formatador.format(saldo) + "\n";
+        String dados = "Cliente: " + this.nome + " | CPF: " + this.cpf + " | Saldo total: " + formatador.format(saldoTotal) + "\n";
         return dados += contasDoCliente.toString();
     }
 
     @Override
     public boolean maiorQue(IComparavel outro) {
         Cliente outroCliente = (Cliente)outro;
-        if(this.saldo > outroCliente.saldo)
+        if(this.saldoTotal > outroCliente.saldoTotal)
             return true;
 
         return false;
@@ -47,21 +48,20 @@ public class Cliente implements IComparavel{
     @Override
     public boolean menorQue(IComparavel outro) {
         Cliente outroCliente = (Cliente)outro;
-        if(this.saldo < outroCliente.saldo)
+        if(this.saldoTotal < outroCliente.saldoTotal)
             return true;
 
         return false;
     }
 
     public ContaBancaria buscarConta(int numConta){
-        ContaBancaria mock = new ContaBancaria(numConta, 00000000000, 0);
-        ContaBancaria buscada = (ContaBancaria) this.contasDoCliente.buscar(mock);
+        ContaBancaria buscada = (ContaBancaria) this.contasDoCliente.buscar(new ContaBancaria(numConta, "", 0));
         return buscada;
     }
 
     public void inserirNovaConta(ContaBancaria nova){
         this.contasDoCliente.inserir(nova);
-        this.saldo += nova.saldo;
+        this.saldoTotal += nova.saldo;
     }
 
     /**
@@ -84,6 +84,6 @@ public class Cliente implements IComparavel{
     public void realizarOperacaoEmContaDoCliente(Operacao op){
         ContaBancaria contaOp = this.buscarConta(op.num);
         contaOp.realizarOperacao(op);
-        this.saldo = this.calcularSaldoTotal();
+        this.saldoTotal = this.calcularSaldoTotal();
     }
 }

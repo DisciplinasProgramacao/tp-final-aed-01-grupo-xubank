@@ -1,16 +1,16 @@
 public class Entrada {
     
-    public long chave;
+    public String chave;
     public Object dado;
     public boolean valido;
 
     public Entrada(){
-        this.chave = -1;
+        this.chave = "";
         this.dado = null;
         this.valido = false;
     }
 
-    public Entrada(long novaChave, Object novo){
+    public Entrada(String novaChave, Object novo){
         this.chave = novaChave;
         this.dado = novo;
         this.validar();

@@ -3,10 +3,12 @@ public class TabHash {
     public final String nomeArquivo = "contas-bancarias.txt";
     public final int tam;
     public Entrada[] dados;
+    public int colisoes;
 
     public TabHash(int n){
         this.tam = n;
         this.dados = new Entrada[tam];
+        this.colisoes = 0;
 
         for(int i = 0; i < this.tam; i++)
             dados[i] = new Entrada();
@@ -18,14 +20,17 @@ public class TabHash {
     
     public int localizar(Object desejado){
         int pos = mapear(desejado);
+        int col = 1;
         while(dados[pos].estahValido() && !dados[pos].dado.equals(desejado)){
-            pos = (pos + 1) % tam;
+            pos = (pos + col * col) % tam;
+            col++;
+            colisoes++;
         }
 
         return pos;
     }
 
-    public void inserir(long chave, Object novo){
+    public void inserir(String chave, Object novo){
         Entrada nova = new Entrada(chave, novo);
         int pos = localizar(novo);
         dados[pos] = nova;
