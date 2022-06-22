@@ -26,13 +26,12 @@ public class Cliente implements IComparavel{
     @Override
     public int hashCode(){
         int codigo = Integer.parseInt(this.cpf.substring(0, 9));
-        return (int) codigo;
+        return codigo / 61;
     }
     
     @Override
     public String toString(){
-        DecimalFormat formatador = new DecimalFormat("0.00");
-        String dados = "Cliente: " + this.nome + " | CPF: " + this.cpf + " | Saldo total: " + formatador.format(saldoTotal) + "\n";
+        String dados = dadosCliente();
         return dados += contasDoCliente.toString();
     }
 
@@ -54,6 +53,11 @@ public class Cliente implements IComparavel{
         return false;
     }
 
+    public String dadosCliente(){
+        DecimalFormat formatador = new DecimalFormat("0.00");
+        return "[Cliente: " + this.nome + " | CPF: " + this.cpf + " | Saldo total: " + formatador.format(saldoTotal) + "]\n";
+    }
+
     public ContaBancaria buscarConta(int numConta){
         ContaBancaria buscada = (ContaBancaria) this.contasDoCliente.buscar(new ContaBancaria(numConta, "", 0));
         return buscada;
@@ -73,6 +77,7 @@ public class Cliente implements IComparavel{
         while(aux != null){
             ContaBancaria essaConta = (ContaBancaria)aux.dado;
             saldoTotal += essaConta.saldo;
+            aux = aux.prox;
         }
         return saldoTotal;
     }

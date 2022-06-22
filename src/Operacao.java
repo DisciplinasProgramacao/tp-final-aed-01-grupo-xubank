@@ -22,11 +22,15 @@ public class Operacao {
             return "Saque";
     }
 
+    /**
+     * checa se e uma operacao de saque ou deposito que sera realizada
+     * @return o valor que vai ser somado a conta
+     */
     public double checarOperacao(){
         double valorOp = this.valor;
         if(this.codigo == 1)
             valorOp = -valorOp;
-        
+
         return valorOp;
     }
 

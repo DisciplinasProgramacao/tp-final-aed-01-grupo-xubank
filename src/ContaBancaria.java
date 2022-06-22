@@ -43,7 +43,7 @@ public class ContaBancaria implements IComparavel{
         ContaBancaria outraConta = (ContaBancaria)outro;
         if(this.num > outraConta.num)
             return true;
-            
+ 
         return false;
     }
 
@@ -58,6 +58,13 @@ public class ContaBancaria implements IComparavel{
 
     public void inserirOperacaoNaConta(Operacao op){
         this.operacoes.inserir(op);
+    }
+
+    public boolean maiorSaldo(ContaBancaria outraConta){
+        if(this.saldo > outraConta.saldo)
+            return true;
+
+        return false;
     }
 
     /**
