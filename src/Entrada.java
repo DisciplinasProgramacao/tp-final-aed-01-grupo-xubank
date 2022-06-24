@@ -16,18 +16,32 @@ public class Entrada {
         this.validar();
     }
 
+    /**
+     * invalida o dado naquela posicao da tabela
+     */
     public void invalidar(){
         this.valido = false;
     }
 
+    /**
+     * valida o dado naquela posicao da tabela
+     */
     public void validar(){
         this.valido = true;
     }
 
+    /**
+     * checa se o dado daquela posicao da tabela esta valido
+     * @return true se estiver
+     */
     public boolean estahValido(){
         return this.valido;
     }
 
+    /**
+     * pega o dado daquela posicao da tabela
+     * @return o dado na posicao da tabela
+     */
     public Object getValor(){
         return this.dado;
     }

@@ -7,12 +7,20 @@ public class Lista {
         this.ult = prim;
     }
 
+    /**
+     * insere um objeto na lista
+     * @param novo o objeto que sera inserido
+     */
     public void inserir(Object novo){
         Elemento novoElemento = new Elemento(novo);
         ult.prox = novoElemento;
         ult = novoElemento;
     }
 
+    /**
+     * retira um objeto da lista
+     * @return o objeto que sera retirado
+     */
     public Object retirar(){
         Elemento aux = prim.prox;
         prim.prox = aux.prox;
@@ -22,6 +30,11 @@ public class Lista {
         return aux.dado;
     }
 
+    /**
+     * busca um objeto na lista
+     * @param outro o objeto mock que sera usado para buscar o objeto desejado
+     * @return o objeto desejado
+     */
     public Object buscar(Object outro){
         Elemento aux = prim.prox;
         while(aux != null){
@@ -43,6 +56,10 @@ public class Lista {
         return sb.toString();
     }
 
+    /**
+     * verifica se a lista esta vazia
+     * @return true se estiver vazia
+     */
     public boolean vazia(){
         return prim == ult;
     }

@@ -56,10 +56,18 @@ public class ContaBancaria implements IComparavel{
         return false;
     }
 
+    /**
+     * insere uma nova operacao na lista de operacoes dessa conta
+     */
     public void inserirOperacaoNaConta(Operacao op){
         this.operacoes.inserir(op);
     }
 
+    /**
+     * compara o saldo de duas contas
+     * @param outraConta conta que sera comparada com esta
+     * @return true se o saldo desta conta for maior
+     */
     public boolean maiorSaldo(ContaBancaria outraConta){
         if(this.saldo > outraConta.saldo)
             return true;

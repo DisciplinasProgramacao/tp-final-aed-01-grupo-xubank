@@ -7,11 +7,10 @@ import java.time.LocalDateTime;
 import java.io.FileNotFoundException;
 import java.time.format.DateTimeFormatter;
 
-
 public class App {
 
-    public static DecimalFormat formatador = new DecimalFormat("0.00");
     public static DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+    public static DecimalFormat formatador = new DecimalFormat("0.00");
     public static final String arquivoClientes = "Banco_Clientes2022.txt";
     public static final String arquivoContas = "Banco_Contas2022.txt";
     public static final String arquivoOperacoes = "Banco_Operacoes2022.txt";
@@ -21,10 +20,15 @@ public class App {
     public static int quantContas;
     public static int quantClientes;
 
+    /**
+     * carrega dados de um arquivo de clientes
+     * @return uma tabela hash de clientes
+     * @throws FileNotFoundException
+     */
     public static TabHash carregarClientes() throws FileNotFoundException{
         Scanner arquivo = new Scanner(new File(arquivoClientes));
         int quant = Integer.parseInt(arquivo.nextLine());
-        int tam = (int)(quant * 5);
+        int tam = (int)(quant * 1.33);
         TabHash novosClientes = new TabHash(tam);
 
         for(int i = 0; i < quant; i++){
@@ -41,6 +45,11 @@ public class App {
         return novosClientes;
     }
 
+    /**
+     * carrega dados de um arquivo de contas
+     * @return uma tabela hash de contas
+     * @throws FileNotFoundException
+     */
     public static TabHash carregarContas() throws FileNotFoundException{
         Scanner arquivo = new Scanner(new File(arquivoContas));
         int quant = Integer.parseInt(arquivo.nextLine());
@@ -65,6 +74,11 @@ public class App {
         return novasContas;
     }
 
+    /**
+     * carrega dados de um arquivo de operacoes
+     * @return uma lista de operacoes
+     * @throws FileNotFoundException
+     */
     public static void carregarOperacoes() throws FileNotFoundException{
         Scanner arquivo = new Scanner(new File(arquivoOperacoes));
 
@@ -84,6 +98,10 @@ public class App {
         arquivo.close();
     }
 
+    /**
+     * salva os dados da tabela no arquivo de clientes
+     * @throws IOException
+     */
     public static void salvarDadosClientes() throws IOException{
         FileWriter escritor = new FileWriter(arquivoClientes, false);
         Entrada[] dados = clientes.dados;
@@ -97,6 +115,10 @@ public class App {
         escritor.close();
     }
     
+    /**
+     * salva os dados da tabela no arquivo de contas
+     * @throws IOException
+     */
     public static void salvarDadosContas() throws IOException{
         FileWriter escritor = new FileWriter(arquivoContas, false);
         Entrada[] dados = contas.dados;
@@ -110,6 +132,10 @@ public class App {
         escritor.close();
     }
 
+    /**
+     * salva as operacoes das contas no arquivo de operacoes
+     * @throws IOException
+     */
     public static void salvarDadosOperacoes() throws IOException{
         FileWriter escritor = new FileWriter(arquivoOperacoes, false);
         Entrada[] dados = contas.dados;
@@ -127,6 +153,30 @@ public class App {
         escritor.close();
     }
 
+    /**
+     * cria um objeto mock com o cpf do cliente desejado e busca o cliente na tabela hash
+     * @param cpfDoCliente cpf do cliente desejado
+     * @return o cliente desejado
+     */
+    public static Cliente localizarCliente(String cpfDoCliente){
+        Cliente requerido = (Cliente)clientes.buscar(new Cliente(cpfDoCliente, ""));
+        return requerido;
+    }
+
+    /**
+     * cria um objeto mock com o numero da conta desejada e busca a conta na tabela hash
+     * @param num o numero da conta desejada
+     * @return a conta desejada
+     */
+    public static ContaBancaria localizarConta(int num){
+        ContaBancaria requerida = (ContaBancaria)contas.buscar(new ContaBancaria(num, "", 0));
+        return requerida;
+    }
+
+    /**
+     * percorre a tabela de contas, procurando a que tem o maior saldo
+     * @return a conta com maior saldo
+     */
     public static ContaBancaria encontrarContaComMaiorSaldo(){
         ContaBancaria contaMaiorSaldo = new ContaBancaria(0, "", Double.MIN_VALUE);
         for(int i = 0; i < contas.dados.length; i++){
@@ -140,6 +190,10 @@ public class App {
         return contaMaiorSaldo;
     }
 
+    /**
+     * percorre a tabela de clientes, somando o saldo total dos clientes
+     * @return o saldo total dividido pela quantidade de clientes, ou seja, o saldo medio
+     */
     public static double calcularSaldoMedio (){
         double saldoTotal = 0;
         for(int i = 0; i < clientes.dados.length; i++){
@@ -151,6 +205,10 @@ public class App {
         return saldoTotal / quantClientes;
     }
 
+    /**
+     * ordena o vetor utilizando shellsort
+     * @param dados o vetor que sera ordenado
+     */
     public static void ordenar(IComparavel[] dados){
         int n = dados.length;
         for (int salto = n/2; salto > 0; salto /= 2){
@@ -165,22 +223,11 @@ public class App {
         }
     }
 
-    public static void trocar(IComparavel[] dados, int pos1, int pos2){
-        IComparavel aux = dados[pos1];
-        dados[pos1] = dados[pos2];
-        dados[pos2] = aux;
-    }
-
-    public static ContaBancaria localizarConta(int num){
-        ContaBancaria requerida = (ContaBancaria)contas.buscar(new ContaBancaria(num, "", 0));
-        return requerida;
-    }
-
-    public static Cliente localizarCliente(String cpfDoCliente){
-        Cliente requerido = (Cliente)clientes.buscar(new Cliente(cpfDoCliente, ""));
-        return requerido;
-    }
-
+    /**
+     * primeiro menu do programa
+     * @param teclado ler do teclado
+     * @return a opcao que o usuario digitou
+     */
     public static int mostrarMenu(Scanner teclado){
         System.out.println("CONTAS BANCARIAS XUBANK");
         System.out.println("==============================");
@@ -192,6 +239,11 @@ public class App {
         return opcao;
     }
 
+    /**
+     * menu para admins
+     * @param teclado ler do teclado
+     * @return a opcao que o admin digitou
+     */
     public static int menuAdmin(Scanner teclado){
         System.out.println("OPCOES DE ADMIN");
         System.out.println("=========================================");
@@ -206,6 +258,11 @@ public class App {
         return opcao;
     }
 
+    /**
+     * menu do cliente
+     * @param teclado ler do teclado
+     * @return a opcao que o cliente digitou
+     */
     public static int menuCliente(Scanner teclado){
         System.out.println("OPERAR CONTA DE UM CLIENTE");
         System.out.println("==========================================");
@@ -219,16 +276,29 @@ public class App {
         return opcao;
     }
 
+    /**
+     * limpa o console
+     */
     public static void limparTela(){
         System.out.print("\033[H\033[2J");  
         System.out.flush();  
     }
 
+    /**
+     * pausa ate o usuario pressionar enter
+     * @param teclado ler do teclado
+     */
     public static void pausar(Scanner teclado){
         System.out.print("Tecle ENTER para continuar. "); 
         teclado.nextLine();
     }
 
+    /**
+     * le do teclado
+     * @param mensagem o que vc deseja que o usuario te informe
+     * @param teclado ler do teclado
+     * @return a resposta do usuario
+     */
     public static String lerTeclado(String mensagem, Scanner teclado){
         System.out.print(mensagem + " ");
         return teclado.nextLine();
@@ -239,8 +309,7 @@ public class App {
         clientes = carregarClientes();
         contas = carregarContas();
         carregarOperacoes();
-        System.out.println("");
-        int opcao, num, opc;
+        int opcao, num, opc, j;
         String cpf;
 
         do{
@@ -259,10 +328,8 @@ public class App {
                         System.out.println("...");
                         File ordenado = new File("contas-ordenadas.txt");
                         FileWriter gravador = new FileWriter(ordenado, false);
-                        
                         ContaBancaria[] contasOrdenadas = new ContaBancaria[quantContas];
-                        int j = 0;
-                        
+                        j = 0;
                         for(int i = 0; i < contas.tam; i++){
                             if(contas.dados[i].estahValido()){
                                 contasOrdenadas[j] = (ContaBancaria)contas.dados[i].dado;
@@ -321,13 +388,11 @@ public class App {
                         break;
 
                         case 5:
-                        String novoCpf = "";
                         Cliente desejado;
-                        
                         do{
                             limparTela();
-                            novoCpf = lerTeclado("CPF: ", teclado);
-                            desejado = localizarCliente(novoCpf);
+                            cpf = lerTeclado("CPF: ", teclado);
+                            desejado = localizarCliente(cpf);
                             if(desejado != null){
                                 System.out.println("Cliente já existe");
                                 pausar(teclado);
@@ -335,8 +400,8 @@ public class App {
                         }while(desejado != null);
 
                         String nome = lerTeclado("Nome do cliente: ", teclado);
-                        Cliente novo = new Cliente(novoCpf, nome);
-                        clientes.inserir(novoCpf, novo);
+                        Cliente novo = new Cliente(cpf, nome);
+                        clientes.inserir(cpf, novo);
                         System.out.println("Cliente cadastrado");
                         quantClientes++;
                         pausar(teclado);
@@ -352,7 +417,7 @@ public class App {
                 Cliente requerido;
                 do{
                     limparTela();
-                    System.out.println("EXTRATO DE POSICAO FINANCEIRA");
+                    System.out.println("OPERAR CONTA DE UM CLIENTE");
                     System.out.println("==========================");
                     cpf = lerTeclado("CPF do Cliente: ", teclado);
                     requerido = localizarCliente(cpf);
@@ -380,6 +445,8 @@ public class App {
 
                         case 2:
                         limparTela();
+                        System.out.println("EXTRATO DE POSICAO FINANCEIRA");
+                        System.out.println("=============================");
                         System.out.println(requerido.toString());
                         pausar(teclado);
                         break;

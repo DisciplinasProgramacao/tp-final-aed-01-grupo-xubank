@@ -23,7 +23,7 @@ public class Operacao {
     }
 
     /**
-     * checa se e uma operacao de saque ou deposito que sera realizada
+     * checa se uma operacao de saque ou de deposito sera realizada
      * @return o valor que vai ser somado a conta
      */
     public double checarOperacao(){
